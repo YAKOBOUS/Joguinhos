@@ -3,984 +3,629 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Palavrinhas 1000 — Desafio de Leitura</title>
+  <title>Palavrinhas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #f0f7ff;
-      --card: #ffffff;
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --secondary: #7c3aed;
-      --success: #16a34a;
-      --success-bg: #dcfce7;
-      --warning: #d97706;
-      --warning-bg: #fef3c7;
-      --danger: #dc2626;
-      --danger-bg: #fee2e2;
-      --text: #1e293b;
-      --muted: #64748b;
-      --border: #dbeafe;
-      --shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.12), 0 8px 10px -6px rgba(37, 99, 235, 0.08);
-    }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-      font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
-    }
-
+    /* Conforto visual para dislexia: fundo creme suave, contraste sem reflexo e espaçamento amplo */
     body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(180deg, #e0f2fe 0%, #f8fafc 100%);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #FFFDF7;
+      color: #1E293B;
+      letter-spacing: 0.06em;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
 
-    .app-container {
-      width: 100%;
-      max-width: 600px;
-      padding: 16px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
+    .dyslexia-text {
+      letter-spacing: 0.09em;
+      word-spacing: 0.16em;
     }
 
-    /* Header */
-    header {
-      background: var(--card);
-      border-radius: 20px;
-      padding: 14px 18px;
-      box-shadow: var(--shadow);
-      border: 2px solid var(--border);
+    .card-surface {
+      background-color: #FFFFFF;
+      border: 2px solid #EFE7D4;
+      box-shadow: 0 10px 28px -8px rgba(160, 135, 90, 0.14);
     }
 
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
+    .btn-choice {
+      background-color: #FFFDF9;
+      border: 2.5px solid #E2D9C5;
+      box-shadow: 0 4px 0 #E2D9C5;
+      transition: transform 0.1s ease, background-color 0.15s ease, border-color 0.15s ease;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .btn-choice:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #E2D9C5;
     }
 
-    .brand-icon {
-      font-size: 28px;
-      background: #eff6ff;
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .btn-choice.is-correct {
+      background-color: #DCFCE7;
+      border-color: #16A34A;
+      color: #14532D;
+      box-shadow: 0 4px 0 #16A34A;
     }
 
-    .brand h1 {
-      margin: 0;
-      font-size: 1.2rem;
-      color: var(--primary-dark);
-      line-height: 1.1;
-    }
-
-    .brand span {
-      font-size: 0.78rem;
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 6px;
-    }
-
-    .pill-btn {
-      background: #eff6ff;
-      color: var(--primary-dark);
-      border: 1.5px solid #bfdbfe;
-      border-radius: 12px;
-      padding: 6px 10px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .pill-btn:active {
-      transform: scale(0.96);
-    }
-
-    .pill-btn.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-
-    /* Progress Bar */
-    .progress-section {
-      margin-top: 12px;
-    }
-
-    .progress-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.82rem;
-      font-weight: 700;
-      margin-bottom: 5px;
-      color: var(--text);
-    }
-
-    .progress-track {
-      height: 12px;
-      background: #e2e8f0;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #2563eb, #16a34a);
-      border-radius: 999px;
-      transition: width 0.4s ease;
-    }
-
-    /* Cards / Screens */
-    .card {
-      background: var(--card);
-      border-radius: 24px;
-      padding: 20px;
-      box-shadow: var(--shadow);
-      border: 2px solid var(--border);
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* Start Screen */
-    .section-title {
-      font-size: 0.9rem;
-      font-weight: 800;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin: 0 0 10px 0;
-    }
-
-    .option-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .option-grid.three {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    .choice-card {
-      background: #f8fafc;
-      border: 2px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 12px 10px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .choice-card.selected {
-      background: #eff6ff;
-      border-color: var(--primary);
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
-    }
-
-    .choice-card .emoji {
-      font-size: 1.5rem;
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .choice-card .label {
-      font-weight: 800;
-      font-size: 0.92rem;
-      display: block;
-      color: var(--text);
-    }
-
-    .choice-card .sub {
-      font-size: 0.74rem;
-      color: var(--muted);
-      display: block;
-      margin-top: 2px;
-    }
-
-    .btn-primary {
-      width: 100%;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      color: white;
-      border: none;
-      border-radius: 18px;
-      padding: 16px;
-      font-size: 1.15rem;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
-      transition: transform 0.12s;
-    }
-
-    .btn-primary:active {
-      transform: scale(0.98);
-    }
-
-    .btn-secondary {
-      width: 100%;
-      background: #f1f5f9;
-      color: var(--text);
-      border: 2px solid #cbd5e1;
-      border-radius: 16px;
-      padding: 13px;
-      font-size: 0.98rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    /* Game Screen */
-    .round-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .round-badge {
-      background: #eff6ff;
-      color: var(--primary-dark);
-      font-weight: 800;
-      padding: 6px 12px;
-      border-radius: 12px;
-      font-size: 0.88rem;
-    }
-
-    .timer-badge {
-      font-variant-numeric: tabular-nums;
-      background: #f1f5f9;
-      color: var(--muted);
-      font-weight: 800;
-      padding: 6px 12px;
-      border-radius: 12px;
-      font-size: 0.88rem;
-    }
-
-    .prompt-box {
-      background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%);
-      border: 2px dashed #93c5fd;
-      border-radius: 20px;
-      padding: 20px 16px;
-      text-align: center;
-      margin-bottom: 16px;
-    }
-
-    .audio-controls {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .speak-btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 16px;
-      padding: 14px 22px;
-      font-size: 1.08rem;
-      font-weight: 800;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 6px 15px rgba(37, 99, 235, 0.25);
-    }
-
-    .speak-btn.slow {
-      background: var(--secondary);
-      box-shadow: 0 6px 15px rgba(124, 58, 237, 0.22);
-    }
-
-    .speak-btn:active {
-      transform: scale(0.96);
-    }
-
-    .direct-word-display {
-      font-size: 2.3rem;
-      font-weight: 900;
-      letter-spacing: 0.04em;
-      color: var(--primary-dark);
-      margin: 8px 0;
-      word-break: break-word;
-    }
-
-    .syllable-hint {
-      margin-top: 12px;
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: var(--secondary);
-      background: white;
-      display: inline-block;
-      padding: 6px 14px;
-      border-radius: 12px;
-      border: 1.5px solid #ddd6fe;
-    }
-
-    .words-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-
-    @media (min-width: 440px) {
-      .words-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    .word-option {
-      background: #ffffff;
-      border: 2.5px solid #cbd5e1;
-      border-radius: 18px;
-      padding: 18px 14px;
-      font-size: 1.45rem;
-      font-weight: 800;
-      color: var(--text);
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.14s;
-      box-shadow: 0 3px 0 #cbd5e1;
-    }
-
-    .word-option:active {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0 #cbd5e1;
-    }
-
-    .word-option.correct {
-      background: var(--success-bg);
-      border-color: var(--success);
-      color: #14532d;
-      box-shadow: 0 3px 0 var(--success);
-    }
-
-    .word-option.wrong {
-      background: var(--danger-bg);
-      border-color: var(--danger);
-      color: #7f1d1d;
-      opacity: 0.65;
+    .btn-choice.is-wrong {
+      background-color: #FEF3C7;
+      border-color: #D97706;
+      color: #78350F;
+      opacity: 0.55;
       pointer-events: none;
     }
 
-    .voice-eval-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 10px;
+    @keyframes popSmooth {
+      0% { transform: scale(0.96); opacity: 0.4; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
-    .eval-btn {
-      border: none;
-      border-radius: 16px;
-      padding: 16px 12px;
-      font-size: 1rem;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .eval-btn.ok {
-      background: var(--success);
-      color: white;
-    }
-
-    .eval-btn.retry {
-      background: var(--warning);
-      color: white;
-    }
-
-    .helper-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 14px;
-      gap: 8px;
-    }
-
-    .feedback-banner {
-      text-align: center;
-      font-weight: 800;
-      font-size: 1.05rem;
-      min-height: 26px;
-      margin-top: 10px;
-    }
-
-    /* Summary Screen */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin: 14px 0;
-    }
-
-    .stat-box {
-      background: #f8fafc;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 12px 8px;
-      text-align: center;
-    }
-
-    .stat-box .val {
-      font-size: 1.35rem;
-      font-weight: 900;
-      color: var(--primary-dark);
-      display: block;
-    }
-
-    .stat-box .lbl {
-      font-size: 0.75rem;
-      color: var(--muted);
-      font-weight: 700;
-    }
-
-    .sentence-box {
-      background: #fefce8;
-      border: 2px solid #fde047;
-      border-radius: 16px;
-      padding: 14px;
-      margin: 14px 0;
-      text-align: center;
-    }
-
-    .sentence-box .tag {
-      font-size: 0.78rem;
-      font-weight: 800;
-      color: #854d0e;
-      text-transform: uppercase;
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    .sentence-box .phrase {
-      font-size: 1.2rem;
-      font-weight: 900;
-      color: #1e293b;
-      line-height: 1.4;
-    }
-
-    .report-preview {
-      background: #f1f5f9;
-      border-radius: 14px;
-      padding: 12px;
-      font-family: monospace;
-      font-size: 0.8rem;
-      white-space: pre-wrap;
-      color: #334155;
-      max-height: 200px;
-      overflow-y: auto;
-      border: 1px solid #cbd5e1;
-      margin-bottom: 12px;
-    }
-
-    .whatsapp-btn {
-      width: 100%;
-      background: #16a34a;
-      color: white;
-      border: none;
-      border-radius: 16px;
-      padding: 15px;
-      font-size: 1.05rem;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 6px 16px rgba(22, 163, 74, 0.25);
-    }
-
-    /* Album Modal */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.55);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 50;
-    }
-
-    .modal-box {
-      background: white;
-      width: 100%;
-      max-width: 540px;
-      max-height: 85vh;
-      border-radius: 24px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .word-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      overflow-y: auto;
-      padding: 4px;
-      max-height: 45vh;
-    }
-
-    .chip {
-      padding: 5px 10px;
-      border-radius: 10px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      background: #f1f5f9;
-      color: #64748b;
-    }
-
-    .chip.mastered {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .chip.hard {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 10px 14px;
-      border-radius: 12px;
-      border: 2px solid #cbd5e1;
-      font-size: 0.95rem;
+    .animate-pop {
+      animation: popSmooth 0.22s ease-out forwards;
     }
   </style>
 </head>
-<body>
-  <div class="app-container">
-    <header>
-      <div class="top-bar">
-        <div class="brand">
-          <div class="brand-icon">📚</div>
-          <div>
-            <h1>Palavrinhas 1000</h1>
-            <span id="poolSubtitle">Banco inédito de 1.000 palavras</span>
-          </div>
+<body class="min-h-screen flex flex-col items-center justify-center p-3 sm:p-5">
+
+  <div class="w-full max-w-lg flex flex-col gap-4">
+
+    <!-- TELA 1: INÍCIO ULTRA LIMPO (ZERO CONFIGURAÇÃO) -->
+    <main id="screenHome" class="card-surface rounded-3xl p-6 sm:p-8 flex flex-col items-center text-center gap-6 animate-pop relative">
+      <!-- Controles discretos nos cantos superiores -->
+      <div class="w-full flex items-center justify-between">
+        <button onclick="openAlbum()" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 font-extrabold text-xs border border-amber-200 transition">
+          ⭐ Ver palavras
+        </button>
+        <button id="btnCaseHome" onclick="toggleCase()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs border border-slate-200 transition">
+          abc
+        </button>
+      </div>
+
+      <!-- Ícone e Título -->
+      <div class="flex flex-col items-center gap-2 mt-1">
+        <div class="w-20 h-20 rounded-3xl bg-amber-100 border-2 border-amber-200 flex items-center justify-center text-5xl shadow-xs">
+          📚
         </div>
-        <div class="header-actions">
-          <button class="pill-btn active" id="caseToggleBtn" onclick="toggleCase()">ABC</button>
-          <button class="pill-btn" onclick="openAlbum()">🏆 Álbum</button>
+        <h1 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight mt-1">Palavrinhas</h1>
+      </div>
+
+      <!-- Barra de Progresso das 1.000 Palavras -->
+      <div class="w-full bg-[#FFF9EB] border-2 border-amber-200/80 rounded-2xl p-4">
+        <div id="homeProgressText" class="text-sm sm:text-base font-black text-amber-950 mb-2">
+          ⭐ 0 de 1.000 palavras memorizadas
+        </div>
+        <div class="w-full h-4 bg-amber-100 rounded-full overflow-hidden border border-amber-200">
+          <div id="homeProgressBar" class="h-full bg-gradient-to-r from-amber-400 via-emerald-500 to-teal-500 rounded-full transition-all duration-500" style="width: 0%"></div>
         </div>
       </div>
 
-      <div class="progress-section">
-        <div class="progress-labels">
-          <span>Palavras dominadas (sem repetir)</span>
-          <span id="progressText">0 / 1.000 (0%)</span>
-        </div>
-        <div class="progress-track">
-          <div class="progress-fill" id="progressBar"></div>
-        </div>
-      </div>
-    </header>
-
-    <!-- TELA INICIAL -->
-    <main id="startScreen" class="card">
-      <p class="section-title">1. Modo de Treino</p>
-      <div class="option-grid">
-        <div class="choice-card selected" data-mode="listen" onclick="selectOption('mode', 'listen', this)">
-          <span class="emoji">🎧</span>
-          <span class="label">Ouvir e Achar</span>
-          <span class="sub">Ouve a palavra e toca na certa</span>
-        </div>
-        <div class="choice-card" data-mode="read" onclick="selectOption('mode', 'read', this)">
-          <span class="emoji">🗣️</span>
-          <span class="label">Ler em Voz Alta</span>
-          <span class="sub">A palavra aparece e você avalia</span>
-        </div>
-      </div>
-
-      <p class="section-title">2. Nível das Palavras</p>
-      <div class="option-grid">
-        <div class="choice-card selected" data-level="all" onclick="selectOption('level', 'all', this)">
-          <span class="emoji">🌈</span>
-          <span class="label">Todas as 1.000</span>
-          <span class="sub" id="countAll">1.000 palavras</span>
-        </div>
-        <div class="choice-card" data-level="1" onclick="selectOption('level', '1', this)">
-          <span class="emoji">🌱</span>
-          <span class="label">Nível 1: Simples</span>
-          <span class="sub" id="countL1">Sílabas diretas</span>
-        </div>
-        <div class="choice-card" data-level="2" onclick="selectOption('level', '2', this)">
-          <span class="emoji">🚀</span>
-          <span class="label">Nível 2: Dígrafos</span>
-          <span class="sub" id="countL2">NH, LH, CH, RR, SS, QU</span>
-        </div>
-        <div class="choice-card" data-level="3" onclick="selectOption('level', '3', this)">
-          <span class="emoji">🏆</span>
-          <span class="label">Nível 3: Desafios</span>
-          <span class="sub" id="countL3">Encontros e palavras maiores</span>
-        </div>
-      </div>
-
-      <p class="section-title">3. Tamanho da Rodada</p>
-      <div class="option-grid three">
-        <div class="choice-card" data-size="6" onclick="selectOption('size', 6, this)">
-          <span class="label">6 palavras</span>
-          <span class="sub">Rápida</span>
-        </div>
-        <div class="choice-card selected" data-size="8" onclick="selectOption('size', 8, this)">
-          <span class="label">8 palavras</span>
-          <span class="sub">Padrão</span>
-        </div>
-        <div class="choice-card" data-size="12" onclick="selectOption('size', 12, this)">
-          <span class="label">12 palavras</span>
-          <span class="sub">Super</span>
-        </div>
-      </div>
-
-      <button class="btn-primary" onclick="startRound()">▶️ Começar Rodada</button>
+      <!-- Botão Único Grande -->
+      <button onclick="startRound()" class="w-full py-5 rounded-3xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-black text-2xl shadow-lg shadow-emerald-600/25 border-b-4 border-emerald-800 transition">
+        ▶️ JOGAR
+      </button>
     </main>
 
-    <!-- TELA DO JOGO -->
-    <section id="gameScreen" class="card hidden">
-      <div class="round-header">
-        <span class="round-badge" id="stepCounter">Palavra 1 de 8</span>
-        <span class="timer-badge" id="timerDisplay">⏱️ 0s</span>
+    <!-- TELA 2: JOGO ATIVO (MODO ÚNICO: OUVIR E TOCAR) -->
+    <section id="screenGame" class="card-surface rounded-3xl p-5 sm:p-6 hidden flex-col gap-4 animate-pop">
+      <!-- Barra superior minimalista -->
+      <div class="flex items-center justify-between gap-2">
+        <span id="roundStepBadge" class="px-3.5 py-1.5 rounded-xl bg-amber-100 text-amber-950 font-black text-sm">
+          1 / 10
+        </span>
+        <div class="flex-1 h-2.5 bg-amber-100 rounded-full overflow-hidden mx-1">
+          <div id="roundStepBar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 10%"></div>
+        </div>
+        <button id="btnCaseGame" onclick="toggleCase()" class="px-2.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-extrabold text-xs border border-slate-200">
+          abc
+        </button>
       </div>
 
-      <div class="prompt-box">
-        <div id="listenPromptArea">
-          <div style="font-size: 0.9rem; font-weight: 700; color: #475569; margin-bottom: 10px;">
-            Ouça com atenção e toque na palavra certa:
-          </div>
-          <div class="audio-controls">
-            <button class="speak-btn" onclick="speakCurrent(1.0)">🔊 Ouvir Palavra</button>
-            <button class="speak-btn slow" onclick="speakCurrent(0.62)">🐢 Devagar</button>
-          </div>
+      <!-- Área de Áudio e Dica Silábica -->
+      <div class="rounded-2xl bg-[#FFF9EB] border-2 border-amber-200 p-4 sm:p-5 text-center flex flex-col items-center gap-3">
+        <button onclick="speakCurrentWord(0.92)" class="w-full sm:w-auto px-6 py-4 rounded-2xl bg-sky-600 hover:bg-sky-700 active:scale-95 text-white font-black text-lg sm:text-xl shadow-md border-b-4 border-sky-800 flex items-center justify-center gap-2.5 transition">
+          🔊 Ouvir de novo
+        </button>
+
+        <div class="flex items-center justify-center gap-2.5 w-full">
+          <button onclick="speakCurrentWord(0.65)" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-indigo-100 hover:bg-indigo-200 active:scale-95 text-indigo-950 font-extrabold text-sm border border-indigo-200 transition">
+            🐢 Devagar
+          </button>
+          <button onclick="revealSyllables()" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 active:scale-95 text-amber-950 font-extrabold text-sm border border-amber-300 transition">
+            💡 Sílabas
+          </button>
         </div>
 
-        <div id="readPromptArea" class="hidden">
-          <div style="font-size: 0.9rem; font-weight: 700; color: #475569;">
-            Leia esta palavra em voz alta:
-          </div>
-          <div class="direct-word-display" id="directWordText">PALAVRA</div>
-          <button class="pill-btn" onclick="speakCurrent(0.85)">🔊 Conferir pronúncia</button>
+        <!-- Caixa de sílabas (aparece quando toca em Sílabas) -->
+        <div id="syllableHintBox" class="hidden w-full py-2.5 px-4 rounded-xl bg-white border-2 border-indigo-200 text-indigo-950 font-black text-xl sm:text-2xl dyslexia-text">
+          TO-MA-TE
         </div>
-
-        <div id="syllableHintBox" class="syllable-hint hidden"></div>
       </div>
 
-      <!-- Opções no modo Ouvir e Achar -->
-      <div id="optionsContainer" class="words-grid"></div>
+      <!-- 4 Opções de Escrita -->
+      <div id="optionsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
 
-      <!-- Botões de avaliação no modo Ler em Voz Alta -->
-      <div id="voiceEvalContainer" class="voice-eval-grid hidden">
-        <button class="eval-btn ok" onclick="handleDirectRead(true)">✅ Leu de Primeira!</button>
-        <button class="eval-btn retry" onclick="handleDirectRead(false)">🔁 Precisou de Ajuda</button>
-      </div>
-
-      <div class="feedback-banner" id="feedbackBanner"></div>
-
-      <div class="helper-bar">
-        <button class="pill-btn" onclick="showSyllables()">💡 Ver Sílabas</button>
-        <button class="pill-btn" onclick="quitToMenu()">🏠 Menu</button>
-      </div>
+      <!-- Feedback positivo/gentil -->
+      <div id="feedbackBanner" class="min-h-[32px] flex items-center justify-center text-center font-black text-base sm:text-lg"></div>
     </section>
 
-    <!-- TELA DE RESUMO -->
-    <section id="summaryScreen" class="card hidden">
-      <h2 style="margin: 0; text-align: center; color: var(--primary-dark);">🎉 Rodada Concluída!</h2>
-      <div class="stats-row">
-        <div class="stat-box">
-          <span class="val" id="sumFirstTry">8/8</span>
-          <span class="lbl">De primeira</span>
+    <!-- TELA 3: CELEBRAÇÃO E RELATÓRIO WHATSAPP -->
+    <section id="screenSummary" class="card-surface rounded-3xl p-5 sm:p-6 hidden flex-col gap-4 animate-pop">
+      <div class="text-center">
+        <div id="summaryEmoji" class="text-5xl mb-1">🎉</div>
+        <h2 id="summaryTitle" class="text-2xl font-black text-slate-800">Muito bem!</h2>
+        <p id="summarySubtitle" class="text-sm font-bold text-slate-600 mt-0.5">Você completou 10 palavras!</p>
+      </div>
+
+      <!-- Cartões de Resumo -->
+      <div class="grid grid-cols-3 gap-2 text-center">
+        <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-3">
+          <div id="sumFirstTry" class="text-lg sm:text-xl font-black text-emerald-800">9/10</div>
+          <div class="text-[11px] font-extrabold text-emerald-700">De primeira</div>
         </div>
-        <div class="stat-box">
-          <span class="val" id="sumAvgTime">4s</span>
-          <span class="lbl">Tempo médio</span>
+        <div class="rounded-2xl bg-sky-50 border border-sky-200 p-3">
+          <div id="sumAvgTime" class="text-lg sm:text-xl font-black text-sky-800">3s</div>
+          <div class="text-[11px] font-extrabold text-sky-700">Tempo médio</div>
         </div>
-        <div class="stat-box">
-          <span class="val" id="sumMastered">8/1000</span>
-          <span class="lbl">Total dominado</span>
+        <div class="rounded-2xl bg-amber-50 border border-amber-200 p-3">
+          <div id="sumTotalMem" class="text-lg sm:text-xl font-black text-amber-800">12 ⭐</div>
+          <div class="text-[11px] font-extrabold text-amber-700">Memorizadas</div>
         </div>
       </div>
 
-      <div class="sentence-box">
-        <span class="tag">🗣️ Desafio Final — Leia a Frase:</span>
-        <div class="phrase" id="finalSentence">A VACA VIU A LUA.</div>
-        <button class="pill-btn" style="margin-top: 8px;" onclick="speakSentence()">🔊 Ouvir Frase</button>
+      <!-- Frase da Rodada -->
+      <div class="rounded-2xl bg-[#FFF9EB] border-2 border-amber-300 p-4 text-center">
+        <div class="text-xs font-black uppercase text-amber-800 mb-1">🗣️ Frase da rodada</div>
+        <div id="sumSentence" class="dyslexia-text text-base sm:text-lg font-black text-slate-900">
+          A BOLA VIU O GATO.
+        </div>
+        <button onclick="speakBonusSentence()" class="mt-2 px-3.5 py-1.5 rounded-xl bg-amber-200/80 hover:bg-amber-200 text-amber-950 font-extrabold text-xs transition">
+          🔊 Ouvir frase
+        </button>
       </div>
 
-      <div class="report-preview" id="reportText"></div>
+      <!-- Relatório Pronto para WhatsApp -->
+      <div>
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs font-extrabold text-slate-500">Relatório para enviar ao papai:</span>
+          <span id="copyConfirm" class="text-xs font-black text-emerald-600 opacity-0 transition-opacity">✅ Copiado!</span>
+        </div>
+        <pre id="reportBox" class="w-full p-3.5 rounded-2xl bg-slate-100 border border-slate-200 text-xs font-mono text-slate-800 whitespace-pre-wrap max-h-40 overflow-y-auto"></pre>
+      </div>
 
-      <button class="whatsapp-btn" onclick="shareWhatsApp()">📲 Enviar Relatório no WhatsApp</button>
-      <button class="btn-secondary" onclick="copyReport()">📋 Copiar Relatório</button>
-      <button class="btn-primary" style="margin-top: 10px;" onclick="startRound()">🔄 Nova Rodada (Palavras Inéditas)</button>
-      <button class="btn-secondary" onclick="quitToMenu()">🏠 Voltar ao Menu</button>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <button onclick="copyReport()" class="py-3.5 px-4 rounded-2xl bg-slate-800 hover:bg-slate-900 text-white font-extrabold text-sm flex items-center justify-center gap-2 transition">
+          📋 Copiar Relatório
+        </button>
+        <button onclick="shareWhatsApp()" class="py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm flex items-center justify-center gap-2 transition">
+          📲 Enviar no WhatsApp
+        </button>
+      </div>
+
+      <button onclick="startRound()" class="w-full py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-white font-black text-xl shadow-md border-b-4 border-amber-700 transition">
+        ▶️ JOGAR DE NOVO
+      </button>
     </section>
+
   </div>
 
-  <!-- MODAL DO ÁLBUM DE 1.000 PALAVRAS -->
-  <div id="albumModal" class="modal-backdrop hidden" onclick="closeAlbumOnBackdrop(event)">
-    <div class="modal-box">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h3 style="margin: 0; color: var(--primary-dark);">🏆 Álbum das 1.000 Palavras</h3>
-        <button class="pill-btn" onclick="closeAlbum()">✕ Fechar</button>
+  <!-- MODAL DISCRETO DO ÁLBUM DE PALAVRAS -->
+  <div id="albumModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center p-3 z-50" onclick="if(event.target===this) closeAlbum()">
+    <div class="bg-[#FFFDF7] border-2 border-amber-200 rounded-3xl w-full max-w-lg max-h-[85vh] p-5 flex flex-col gap-3 shadow-2xl">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-black text-slate-800">⭐ Minhas Palavras</h3>
+        <button onclick="closeAlbum()" class="px-3.5 py-1.5 rounded-xl bg-slate-200 text-slate-800 font-extrabold text-xs">Fechar ✕</button>
       </div>
-      <div style="font-size: 0.85rem; color: var(--muted);" id="albumStatsLine"></div>
-      <input type="text" class="search-input" id="albumSearch" placeholder="Buscar palavra no banco..." oninput="renderAlbumChips()" />
-      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-        <button class="pill-btn active" id="filterAllBtn" onclick="setAlbumFilter('all', this)">Todas (1.000)</button>
-        <button class="pill-btn" id="filterMasteredBtn" onclick="setAlbumFilter('mastered', this)">✅ Dominadas</button>
-        <button class="pill-btn" id="filterPendingBtn" onclick="setAlbumFilter('pending', this)">🆕 Faltam</button>
-        <button class="pill-btn" id="filterHardBtn" onclick="setAlbumFilter('hard', this)">🔁 Reforço</button>
+      <p id="albumStats" class="text-xs font-bold text-slate-600"></p>
+      <div class="flex gap-1.5">
+        <button onclick="filterAlbum('memorized', this)" class="alb-tab px-3 py-1.5 rounded-xl text-xs font-extrabold bg-emerald-600 text-white">⭐ Memorizadas</button>
+        <button onclick="filterAlbum('learning', this)" class="alb-tab px-3 py-1.5 rounded-xl text-xs font-extrabold bg-white border border-slate-200 text-slate-700">👀 Treinando</button>
+        <button onclick="filterAlbum('all', this)" class="alb-tab px-3 py-1.5 rounded-xl text-xs font-extrabold bg-white border border-slate-200 text-slate-700">Todas (1.000)</button>
       </div>
-      <div class="word-chips" id="albumChips"></div>
-      <div style="display: flex; justify-content: space-between; gap: 8px; margin-top: 4px;">
-        <button class="pill-btn" style="color: #dc2626; border-color: #fecaca; background: #fef2f2;" onclick="resetProgress()">🗑️ Zerar Progresso</button>
-      </div>
+      <div id="albumContainer" class="flex flex-wrap gap-1.5 overflow-y-auto p-1 max-h-[52vh]"></div>
     </div>
   </div>
 
   <script>
     // =========================================================================
-    // BANCO CURADO DE 1.000 PALAVRAS ÚNICAS EM PORTUGUÊS (3 NÍVEIS PROGRESSIVOS)
+    // 1. BANCO REAL E COMPLETO DE 1.000 PALAVRAS DISTINTAS (800 SIMPLES + 200 LEVES)
     // =========================================================================
-    const RAW_LEVEL_1 = `
-      abacate abacaxi abobora acarajé açude adega adulto afeto agora agudo ajuda aluno amado amarelo amigo amizade amor amora anel animal animo antena apito arame arara areia aroma asilo atalho atum aula ave aveia avenida avião aviso avó avô azedo azeite azul
-      babador bacana bacia bagagem baiana baile bala balada balão baleia banana bananada banda bandeja barata barato barbante barco barriga batata batida batom baú bebida beco beijo beleza belo berinjela bexiga bico bife bigode bilhete bingo biscoito boca bocado bode boia bola bolacha boliche bolo bolota boneca boneco bonito borda bota botão bote bule buraco buzina
-      cabide cabo cabra cacau cacho cadeado cadeira cadela caderno café cafeteira caixa caixote caju cajueiro calado calça caldo calopsita cama camada camelo camisa camiseta cana canal canário caneca canela caneta canoa capa capacete capela capim capitão capote caqui cara caracol carimbo carinho carne caroço carona carro carta casa casaco casca casco casulo cavalo cebola cedo cela celular cenoura cera cereja cervo cesta cesto céu cinema cinto cinza circo cisne coador cobertor cobra coco cocada cogumelo cola colar colchão colega coleira colina cometa comida cone conta copo cor coragem coral coroa corpo corrida coruja costura cotovelo couve cozinha creme cubo cueca cuidado cupido
-      dado dama dança danone data dedo degrau deitado dente desenho deserto dia diamante dieta dinheiro dinossauro disco doce doçura doente domingo dono duende duna duque
-      eco edifício educado égua elefante elegante elogio ema empada encanto energia envelope enxada época equipe erva escada escola escova escudo espada espelho espera espiga espuma esquina estaca estado estante estrela estojo estrada estudo etiqueta exame exemplo
-      fábrica faca fada faixa fala família farinha farofa farol fatiado favor fazenda febre feira feijão felicidade feliz ferro festa fita fivela fogão fogo foguete fome fonte formiga forno foto fumaça funil furacão futuro fubá
-      gaiola gaivota galho galo garrafa garfo garota garoto gato gaveta geladeira geleia gelo gema gêmeo gigante girafa girassol goleiro goiaba goiabada goma gorila gota gravata gruta
-      horta hotel humano idade ideia igreja ilha imagem imã inseto inverno irmão irmã
-      jabuti jacaré janela jangada jantar jaqueta jardim jarra jarro javali jeito jipe joelho jogador jogo joia jornal jovem juiz jujuba jumento jurado
-      lado lago lagoa lama laranja laranjada lata leite leão legume leitura lenço lençol lenda leopardo letra livro lixo lobo loja lousa lua luar lugar lupa luva
-      maçã macaco macarrão madeira madrugada mãe mágica mágico maio mala maleta mamão mamadeira mamãe manga manhã manteiga mapa máquina mar maracujá maré margarida mariposa martelo massa mato medalha médico meia mel melancia melão menina menino mercado mesa metade moeda mola molho morango morcego moto mula mundo muro música
-      nabo nadador namoro nariz natureza navio nave neblina neve noite nome nota novela nuvem
-      oca óculos oficina óleo olho onda onça orelha ouro ovelha ovo
-      paçoca pacote padaria padre página pai painel paisagem palavra palácio palito palma palmeira pantera pano papagaio papai papel papelão parada parafuso paraíso parede parque passeio pasta pastel patinete pato patins pavão paz peão pedra pedaço pedido pegada peixe pele pelo pena pente pepino pequeno pera perigo perna peru pescaria pescoço pessoa peteca piano picada picolé pijama pilha piloto pimenta pimentão pincel pinguim pino pintura pipa pipoca pirata pires pirulito piscina pista poça poço poema poeta polegar poltrona polvo pomada pomar pomba pombo ponte ponto porco porta portão porto pote povo praça praia prato presente primavera primo pudim pulseira pulo puma
-      quadra quadrado quadro quarto queijo queixo quente quiabo quintal
-      rabanete rabo raio raiz ralador ramo rapadura rapaz raposa rato rede regador regra rei relógio remédio remo repolho retrato revista riacho rico rio risada roda rodo rolo romã rosa rosto roupa rua ruído
-      sabão sabiá sabor sacola saia sal salada saleiro salgado salão sapato sapo saudade saúde seda segredo semente semana senhora sereia serra serrote seta sino siri sofá sol soldado sombra sonho sopa sorvete suco suor surpresa
-      tabuada taça talher tamanduá tambor tampa tangerina tapete tarefa tartaruga tatu teatro teto tecido teclado telefone telha telhado tempestade tempo tênis tesoura tigela tigre tijolo tinta tio tia toalha toca toco tomate torneira torre torta touca tubarão tucano tulipa túnel turma
-      umbigo unha universo urso urubu uva
-      vaca vaga vagalume vale varanda vareta vaso vassoura vela veludo vento verão verdade verde vermelho vestido viagem vida vidro vila violão violino visita vitamina vitória vizinho volante volta vovó vovô
-      xadrez xarope xícara xixi zebra zíper zoológico
-    `;
+    const SIMPLE_LIST = [
+      "aba","abacate","abacaxi","abafado","abanar","abano","abelha","aberta","aberto","abobora",
+      "abotoar","acabar","acalmar","acaso","aceitar","acenar","aceno","aceso","achar","acima",
+      "acordar","acude","adega","adeus","adiar","adubo","adulto","afago","afeto","afiar",
+      "afinar","afogar","agora","agudo","ajuda","ajudar","alada","alado","alagar","alamo",
+      "alface","aliado","alimento","alisar","alivio","almoco","alugar","aluno","amada","amado",
+      "amarelo","amassar","amiga","amigo","amizade","amor","amora","analise","anel","animal",
+      "animar","animo","anotar","antena","antiga","antigo","apagar","aparo","apego","apelo",
+      "apenas","aperto","apitar","apito","apoio","apurar","arado","arame","arara","areia",
+      "arena","aroma","arrumar","arte","asilo","assar","assinar","atacado","atacar","atalho",
+      "atento","aterro","ativo","atleta","atomo","atraso","atum","audaz","aula","autor",
+      "ave","aveia","avenida","aviao","avisar","aviso","avocado","azedo","azeite","azul",
+      "azulado","baba","babador","bacana","bacia","bagagem","baia","baiana","baiano","bailar",
+      "baile","baita","baixo","bala","balada","balao","baleia","baliza","banana","bananada",
+      "banca","banco","banda","bandeja","banho","barata","barato","barba","barbante","barco",
+      "barra","barriga","barro","base","bata","batata","bater","batida","batom","bau",
+      "bebado","bebe","bebida","beco","beijar","beijo","beira","beleza","belo","bem",
+      "bengala","berco","berinjela","bexiga","bica","bico","bife","bigode","bilhete","bingo",
+      "biscoito","boca","bocado","bode","boia","boiada","boi","bola","bolacha","bolada",
+      "boleto","boliche","bolo","bolota","bolsa","bolso","bom","bomba","boneca","boneco",
+      "bonita","bonito","borda","bota","botar","botao","bote","braco","bravo","brisa",
+      "broa","bule","buraco","buscar","buzina","cabana","cabelo","cabide","cabo","cabra",
+      "cacau","cacho","cada","cadeado","cadeira","cadela","caderno","cafe","cafeteira","caixa",
+      "caixote","caju","cajueiro","calada","calado","calca","caldo","calma","calmo","calor",
+      "cama","camada","camara","camelo","camisa","camiseta","campo","cana","canal","canario",
+      "caneca","canela","caneta","cano","canoa","canto","capa","capacete","capaz","capela",
+      "capim","capitao","capote","caqui","cara","caracol","carimbo","carinho","carne","caro",
+      "caroco","carona","carro","carta","casa","casaco","casal","casca","casco","casulo",
+      "catar","cauda","causa","cavalo","cebola","cedo","cela","celular","cena","cenoura",
+      "cento","cera","cerca","cereja","certo","cervo","cesta","cesto","ceu","cevada",
+      "cidadao","cidade","cima","cinema","cinto","cinza","circo","cisne","citar","clara",
+      "claro","clima","clube","coador","cobertor","cobra","cobrir","coco","cocada","coelho",
+      "cogumelo","coisa","cola","colar","colchao","colega","coleira","colher","colina","comecar",
+      "comer","cometa","comida","comum","cone","conta","contar","copo","cor","coracao",
+      "coragem","coral","corda","coroa","corpo","correr","corrida","cortar","corte","coruja",
+      "costa","costura","cotovelo","couve","cova","cozinha","creme","criar","crina","cru",
+      "cubo","cueca","cuidado","cuidar","culpa","cupido","curar","curso","curto","curva",
+      "dada","dado","dama","danca","dancar","danone","data","debaixo","dedal","dedo",
+      "defesa","degrau","deitado","deitar","deixar","delicado","demais","dente","depois","desenho",
+      "deserto","desejo","dever","devagar","dia","diamante","dieta","dinheiro","dinossauro","direito",
+      "disco","ditado","divida","doar","dobrar","dobro","doce","docura","doente","doido",
+      "domingo","domino","dona","dono","dormir","dose","dourado","duelo","duende","duna",
+      "dupla","duplo","duque","duro","duvida","eco","edificio","educado","egua","eixo",
+      "elegante","elefante","elenco","elevar","elogio","ema","embalo","empada","empate","encanto",
+      "energia","enfeite","engano","enorme","ensaio","entao","entrada","entrar","envelope","enxada",
+      "epoca","equipe","errado","erva","escada","escola","escova","escudo","escuro","espaco",
+      "espada","espelho","espera","esperto","espiga","espuma","esquina","estaca","estado","estante",
+      "estar","estatua","estilo","estojo","estrada","estudo","etapa","etiqueta","exame","exemplo",
+      "exibir","exito","fabrica","faca","fada","faixa","fala","falar","fama","familia",
+      "farinha","farofa","farol","fatiado","fato","favor","fazenda","fazer","febre","fechar",
+      "feira","feijao","feito","felicidade","feliz","femea","ferida","ferias","ferro","festa",
+      "fita","fivela","fixo","flor","foca","fofo","fogao","fogo","foguete","folga",
+      "folha","fome","fonte","fora","forca","forma","formiga","forno","forte","foto",
+      "fraco","frase","freio","frente","fresco","frio","frita","frito","fruta","fuba",
+      "fuga","fugir","fumaca","fundo","funil","furacao","furar","furo","futebol","futuro",
+      "gaita","gaiola","gaivota","galho","galo","ganhar","garagem","garfo","garota","garoto",
+      "garrafa","gastar","gata","gato","gaveta","geladeira","gelado","geleia","gelo","gema",
+      "gemeo","gengibre","genio","gente","geral","gerar","gigante","girafa","girar","girassol",
+      "giro","goleiro","golfe","golo","goma","gordo","gorila","gostar","gosto","gota",
+      "gozar","grade","grama","grande","grao","grato","gravata","greve","grilo","gripe",
+      "gritar","grito","grosso","grupo","gruta","guarda","guia","guiar","habil","harpa",
+      "heroi","hino","hoje","homem","hora","horta","hotel","humano","humor","idade",
+      "ideia","idoso","igreja","igual","ilha","imagem","ima","imitar","imovel","inicio",
+      "inseto","inteiro","inverno","irmao","irma","isca","isento","item","jabuti","jacare",
+      "janela","jangada","jantar","jaqueta","jardim","jarra","jarro","javali","jeito","jipe",
+      "joelho","jogador","jogar","jogo","joia","jornal","jovem","juiz","jujuba","julgar",
+      "jumento","juntar","junto","jurado","jurar","justo","labio","laco","lado","lago",
+      "lagoa","lama","lamina","lanche","lapis","laranja","laranjada","largo","lata","latido",
+      "lavar","lazer","leao","legume","lei","leite","leitura","lembrar","leme","lenco",
+      "lencol","lenda","lente","lento","leopardo","ler","letra","levar","leve","liberar",
+      "licao","lidar","ligar","limao","limpar","limpo","linda","lindo","linha","liquido",
+      "lista","litro","livro","lixo","lobo","local","logo","loja","lona","longe",
+      "longo","lousa","lua","luar","lucro","lugar","lupa","luta","lutar","luva",
+      "luz","maca","macaco","macarrao","macio","madeira","madrugada","mae","magia","magica",
+      "magico","magro","maio","maior","mala","maleta","mamae","mamao","mamadeira","mancha",
+      "mandar","manga","manha","mania","manta","manteiga","mapa","maquina","mar","maracuja",
+      "marca","marcar","mare","margarida","marido","mariposa","martelo","massa","matar","mato",
+      "medalha","medico","medida","medir","medo","meia","meio","mel","melancia","melao",
+      "menina","menino","menor","menos","mente","mentira","mercado","mesa","mesmo","metade",
+      "metal","meter","meu","mexer","mingau","minuto","miolo","mirar","missa","misto",
+      "moda","modelo","moeda","moer","mola","molde","mole","molho","morango","morar",
+      "morcego","morder","moreno","morro","morte","mosca","mostrar","motivo","moto","motor",
+      "mover","muda","mudar","muito","mula","multa","mundo","muro","museu","musica",
+      "nabo","nadar","nadador","namoro","nariz","nascer","natural","natureza","navio","nave",
+      "neblina","negar","negocio","neto","neve","noite","noiva","noivo","nome","norte",
+      "nota","notar","noticia","nova","novela","novelo","novo","nuvem","obra","oca",
+      "oculos","ocupado","odio","oeste","oficina","oleo","olhar","olho","onda","onca",
+      "ontem","opaco","opcao","operar","opiniao","orar","ordem","orelha","orgulho","origem",
+      "ouro","ousado","outono","outro","ouvir","ovelha","ovo","pacoca","pacote","padaria",
+      "padre","pagar","pagina","pai","painel","paisagem","palavra","palacio","palito","palma",
+      "palmeira","pano","pantera","papagaio","papai","papel","papelao","par","parada","parafuso",
+      "paraiso","parar","parede","parque","parte","partir","passado","passar","passeio","pasta",
+      "pastel","pata","patinete","pato","patins","pausa","pavao","paz","pe","peao",
+      "peca","pedaco","pedal","pedido","pedir","pedra","pegada","pegar","peixe","pele",
+      "pelo","pena","pente","pepino","pequeno","pera","perder","perigo","perna","perto",
+      "peru","pesado","pescaria","pescoco","peso","pessoa","peteca","piano","picada","picar",
+      "picole","pijama","pilha","piloto","pimenta","pimentao","pincel","pingo","pinguim","pino",
+      "pintar","pintura","pipa","pipoca","pirata","pires","pirulito","piscina","pista","placa",
+      "plano","planta","pobre","poca","poco","poder","poema","poeta","polegar","poltrona",
+      "polvo","pomada","pomar","pomba","pombo","ponta","ponte","ponto","porco","porta",
+      "portao","porto","posse","poste","pote","pouco","povo","praca","prado","praia",
+      "prata","prato","prazer","preco","prego","premio","presente","preso","preto","primavera",
+      "primo","princesa","principe","procurar","produto","prova","provar","pudim","pular","pulseira",
+      "pulo","puma","puro","puxar","quadra","quadrado","quadro","quarto","quase","queda",
+      "queijo","queixo","quente","querer","quiabo","quilo","quintal","rabanete","rabo","raio",
+      "raiz","ralador","ralo","ramo","rapadura","rapaz","rapido","raposa","rasgar","rato",
+      "razao","recado","receita","rede","regador","regar","regra","rei","reino","relogio",
+      "remedio","remo","renda","repolho","repouso","resumo","reto","retrato","revista","riacho",
+      "rico","rio","risada","risco","ritmo","roda","rodar","rodo","rolo","roma",
+      "rosa","rosto","rota","roupa","rua","ruido","rumo","sabao","saber","sabia",
+      "sabor","sacola","saida","sair","saia","sal","salada","salario","saleiro","salgado",
+      "salao","saltar","salto","salvar","sapato","sapo","saudade","saude","secar","seco",
+      "seda","sede","segredo","seguir","seguro","selo","semana","semente","senhora","sentar",
+      "sentido","sereia","sereno","serie","serio","serra","serrote","servir","seta","setor",
+      "sinal","sino","siri","sitio","sobra","sobrar","sofa","sol","soldado","solo",
+      "soltar","solto","sombra","somar","sono","sopa","soprar","sorriso","sorte","sorvete",
+      "suave","subir","suco","sujo","sumir","suor","surpresa","tabela","tabuada","taca",
+      "talher","tamandua","tambor","tampa","tangerina","tapete","tarde","tarefa","tartaruga","tatu",
+      "teatro","tecido","teclado","tela","telefone","telha","telhado","tema","tempestade","tempo",
+      "tenis","ter","terra","tesoura","testa","teto","tigela","tigre","tijolo","tinta",
+      "tio","tia","tirar","titulo","toalha","toca","tocar","toco","todo","tomate",
+      "torneira","torre","torta","touca","trazer","treinar","treino","trem","trevo","trigo",
+      "trilha","troca","trocar","tronco","tubarao","tucano","tudo","tulipa","tunel","turma",
+      "ultimo","umbigo","unico","unido","universo","urso","urubu","usar","uso","uva",
+      "vaca","vaga","vagalume","vago","vale","valer","valor","varanda","vareta","varios",
+      "vaso","vassoura","vela","velho","veloz","veludo","vencer","venda","vender","vento",
+      "ver","verao","verdade","verde","vermelho","verso","vestido","vez","viagem","viajar",
+      "vida","vidro","vila","violao","violino","vir","virar","visita","visitar","vista",
+      "vitamina","vitoria","viver","vivo","vizinho","voar","voce","volante","volta","voltar",
+      "vovo","voz","xadrez","xale","xarope","xicara","xixi","zangado","zebra","zero",
+      "ziper","zona","zoologico","abajur","acorde","alicate","almofada","alvorada","amendoa","amostra",
+      "ancora","andar","aparelho","aplauso","aquario","arquivo","artesanato","aspirador","atacante","atividade",
+      "aumento","avental","azeitona","bailarina","balanca","bambu","bandeira","banquete","barbearia","barraca",
+      "bateria","bebedouro","biblioteca","bilheteria","biquini","bisavo","bombeiro","bordado","borracheiro","bracelete",
+      "brasileiro","broto","bufalo","bussola","cabrito","cacador","cacto","cadarco","cafune","calcada",
+      "calendario","camaleao","camarao","camisola","campeao","canavial","candeeiro","canguru","cantiga","cantor",
+      "capivara","caravana","cardume","carroca","carteira","carteiro","cascata","castelo","cavalete","cemiterio",
+      "centopeia","ceramica","chafariz","chamine","chinelinho","ciclista","cigarro","cintura","claridade","cobertorzinho"
+    ];
 
-    const RAW_LEVEL_2 = `
-      abelha acolher agulha alho alinhavo amanhã apanhar aranha arranhar arrumar assado assar assento assobio assustar atravessar
-      banheiro banhar barulho batalha baunilha beija-flor bicho bilhete bolha borracha brilho bruxa
-      cachorro caixinha caminhar caminho campanha canção carinha carrinho cartilha castanha cegonha chácara chaleira chama chamada chamar chamativo champanhe chão chapéu charada charme charuto chave chaveiro chegada chegar cheia cheio cheiro cheiroso chinelo chocalho chocolate choque chorar choro chover chuva chuveiro chuvoso cigarra coelho colcha colheita colher companhia concha cozinha cozinhar cozinheiro
-      desenhar dinheiro disfarce
-      empilhar encher enxame ervilha escolha escolher esconder espantalho espelho espinho esquerdo
-      faísca farinha fechadura fechar filhote folha folhagem folheto fornalha
-      gafanhoto galinha galinheiro gancho garrafa gatinho guerra guerreiro guitarra
-      ilha joaninha
-      lenha linha linhagem passarinho passaro
-      machado mancha maracujá maravilha medalha mergulho mexerilha minhoca mochila molhado molhar montanha
-      nenhum ninho
-      olhar orelha ovelha
-      palha palhaço passarela passear peixinho piolho pinheiro piscina porquinho
-      queijo queimar queixo querido
-      rainha rascunho rebanho recolher redemoinho repolho rocha
-      salsicha sardinha senhor senhora sobrancelha sonho sonhar sossego
-      telha telhado toalha trabalho trabalhar
-      unha vassoura velhinho vermelho vizinho
-    `;
+    const CHALLENGE_LIST = [
+      "abelhinha","abraco","acougue","acucar","agulha","alegria","algodao","alianca","alho","amanha",
+      "amendoim","andorinha","anjo","anzol","aranha","arranhar","arroz","arvore","assobio","assustar",
+      "bagunca","banheiro","barulho","batalha","baunilha","bicho","bicicleta","blusa","bolha","borboleta",
+      "borracha","brilho","brinquedo","brocolis","bruxa","cabeleireiro","cachorro","caixinha","calcao","caminhao",
+      "caminho","campainha","cancao","caranguejo","carinha","carrinho","cartilha","castanha","cegonha","chacara",
+      "chaleira","chama","chamar","champanhe","chao","chapeu","charada","charme","chave","chaveiro",
+      "chegada","chegar","cheia","cheio","cheiro","chinelo","chocalho","chocolate","choque","chorar",
+      "choro","chover","chuva","chuveiro","cigarra","coelhinho","colcha","colheita","companhia","concha",
+      "cozinheiro","crianca","cruz","desenhar","dragao","empilhar","encher","enxame","ervilha","escolha",
+      "esconder","espantalho","espinho","estrela","fechadura","filhote","flauta","flecha","florista","fogueira",
+      "folhagem","fornalha","framboesa","gafanhoto","galinha","galinheiro","gancho","garrafinha","gatinho","guerra",
+      "guitarra","helicoptero","hipopotamo","historia","joaninha","lagartixa","lanchonete","lanterna","lenha","limonada",
+      "lingua","machado","maravilha","mergulho","minhoca","mochila","molhado","montanha","ninho","palhaco",
+      "passarinho","passaro","peixinho","piolho","pinheiro","porquinho","prateleira","preguica","quadrinho","queimar",
+      "querido","rainha","rascunho","rebanho","redemoinho","rocha","salsicha","sanduiche","sardinha","senhor",
+      "sobrancelha","sonhar","sonho","sossego","sorveteria","trabalho","travesseiro","triangulo","unha","velhinho",
+      "ventilador","violoncelo","zangao","zumbido","abracar","achocolatado","agulheiro","almanaque","almofadinha","amarelinha",
+      "aniversario","apontador","aquecedor","aracnideo","armadilha","arranha-ceu","arrepio","artilharia","assadeira","astronauta",
+      "atrapalhar","aventurar","azulejo","bagageiro","balancinho","bambolê","bandeirinha","banheirinha","barbear","barrigudo",
+      "batatinha","beijinho","bercario","bichinho","bilhetinho","biscoitinho","blusinha","bolinha","bonequinha","borrachinha"
+    ];
 
-    const RAW_LEVEL_3 = `
-      abajur abraço açougue açúcar aeroporto agenda águia aldeia alegria algodão aliança almoço almofada ambulância amendoim âncora andorinha anjo anta anzol apartamento aprendiz aquário arco argila armário arroz árvore asfalto astronauta atleta ator atriz avestruz azulejo
-      bacalhau bagunça bailarino balança balde bambu banco bandeira baralho barba barraca barril bebê bengala berço biblioteca bicicleta bisavó bisavô bloco blusa boi boina bolsa bolso bombeiro bondade bordado bosque braço brinquedo brócolis broto búfalo bússola
-      cabeleireiro cabrito caçador cacto cadarço cafuné calçada calendário calmaria camaleão camarão camisola campainha campeão canavial candeeiro canguru cantiga cantor cantora capivara caranguejo caravana cardume carroça carteira carteiro cascata castelo catavento caverna centopeia cerca cérebro churrasco ciclista cilindro cintura ciranda claridade coala cobrador coceira cofre colmeia companheiro computador construtor conversa coração corda corredor correio cortina costureira crina cristal cruzeiro curva
-      delegado dentista desenhista dicionário diretor diretora diversão dobro doutor doutora eclipse elevador enfermeira enfermeiro engenheiro equilibrista escadaria escama escorpião escorregador escritor escritora escrivaninha esmeralda espaço espetáculo espinafre esponja esporte estádio estátua estudante eucalipto expedição
-      faisão falcão fantasia farmacêutico fazendeiro feriado ferramenta ferreiro ferrovia figurinha filme flauta flecha florista fogueira folclore formigueiro fortaleza fotógrafo framboesa freguês fronteira futebol
-      galáxia ganso garagem garçom garganta garoa gelatina geleira gênio geografia ginástica giz globo goleada gorro grafite granja graveto guardanapo
-      harpa hélice helicóptero herói hipopótamo história horizonte hospital iceberg impressão índio infância instrumento internet
-      jardineiro jararaca jasmim jegue jerimum joalheria jornalista juventude
-      labirinto ladeira lagarta lagartixa lagarto lagosta lâmpada lanche lancheira lanterna lápis lapiseira laranjeira lavadeira lavoura legenda lenhador leoa liberdade lição limão limonada limpeza língua literatura livraria locomotiva lontra louça luminária luneta lustre
-      macieira madrinha maestro magia malabarista mamífero manada mangueira manicure marceneiro marfim marinheiro marionete marmelo marmita marreco máscara matemática matéria mecânico medicina melodia memória mergulhador metal meteoro microfone microscópio milharal mingau miniatura mistério motorista multidão múmia muralha museu
-      nadadeira nevasca norte notícia novelo nutricionista oásis objetivo obra oceano oculista oeste oferta olimpíada ombro orquestra orvalho ostra outono ouvido
-      padeiro padrinho paladar paletó pântano papelaria paraquedas parquinho passageiro pastagem pastor patinação pediatra pedreiro peixaria pelicano pêndulo peneira penhasco pensamento penteado perfume pergaminho periquito pérola personagem pesadelo pescador pesquisa pétala pica-pau piquenique pirâmide planeta planície plantação planalto plateia pluma poeira polícia policial polvilho porcelana porteiro poupança pradaria prateleira preguiça prêmio produto programa projeto proteção pupila
-      quebra-cabeça quermesse quilômetro quiosque
-      rabanada rabisco rádio rebanho recado receita recreio refeição reflexo regata região régua relâmpago relevo remendo réptil reserva resfriado respeito restaurante resultado resumo reunião ribeirão riqueza ritmo rodovia romance rouxinol rubi
-      sabedoria sabonete saci safira sagui salgadinho sandália sanduíche sangue sanfona sapateiro sapatilha satélite saudação savana secretaria secretário século selva semáforo sentido sereno seringa serralheiro silêncio simpatia sinfonia socorro soletração solidão soluço sombrinha sopro sorveteria sucesso sucuri sul supermercado suspiro
-      tabela tabuleiro tamanho tamanco tarde tarifa tatuagem taxista técnica tecnologia teia televisão tempero temporada tenista terreno território tesouro timão tintura título tocha toldo topázio torneio torrada toupeira tradutor trânsito transporte trapézio travessa travessia trevo triângulo tribo triciclo trilha tripulação troféu trompete tropa trovoada turismo turista tutor
-      umidade uniforme união utensílio utilidade vacina vagão vaidade valentia valsa vantagem vapor vaqueiro varal variedade vegetação vegetal veículo veleiro velocidade vendedor ventania ventilador verdura vereda verniz verso vértice vespa vestimenta veterinário viaduto viajante vibração vidraça vigia vilarejo vinagre violeta virada virtude visão visitante vitrine viveiro vocabulário voleibol volume vontade xale xampu xerife zangão zebu zelador zumbido
-    `;
-
-    function parseWordBlock(block) {
-      return block
-        .trim()
-        .split(/\s+/)
-        .map(w => w.trim().toLowerCase())
-        .filter(w => w.length >= 2 && /^[a-záàâãéêíóôõúüç-]+$/i.test(w));
-    }
-
-    // Constrói exatamente 1.000 palavras únicas com níveis definidos
-    const seen = new Set();
-    const ALL_WORDS = [];
-
-    function addWordsFromList(list, level) {
-      for (const w of list) {
-        if (ALL_WORDS.length >= 1000) break;
-        if (!seen.has(w)) {
-          seen.add(w);
-          ALL_WORDS.push({ word: w, level });
-        }
-      }
-    }
-
-    addWordsFromList(parseWordBlock(RAW_LEVEL_1), 1);
-    addWordsFromList(parseWordBlock(RAW_LEVEL_2), 2);
-    addWordsFromList(parseWordBlock(RAW_LEVEL_3), 3);
-
-    const TOTAL_WORDS = ALL_WORDS.length; // 1000
-
-    // =========================================================================
-    // ESTADO E PERSISTÊNCIA (LOCALSTORAGE)
-    // =========================================================================
-    const STORAGE_KEY = 'palavrinhas_1000_v1';
-
-    let state = {
-      mastered: {}, // { palavra: true }
-      errors: {},   // { palavra: count }
-      roundsPlayed: 0,
-      uppercase: true
+    const ACCENTS = {
+      abobora:"abóbora", acude:"açude", alamo:"álamo", alivio:"alívio", almoco:"almoço", analise:"análise",
+      animo:"ânimo", atomo:"átomo", aviao:"avião", balao:"balão", bau:"baú", bebado:"bebado",
+      bebe:"bebê", berco:"berço", botao:"botão", braco:"braço", cafe:"café", calca:"calça",
+      camara:"câmara", canario:"canário", capitao:"capitão", caroco:"caroço", ceu:"céu", cidadao:"cidadão",
+      colchao:"colchão", comecar:"começar", coracao:"coração", danca:"dança", dancar:"dançar", divida:"dívida",
+      docura:"doçura", domino:"dominó", duvida:"dúvida", edificio:"edifício", egua:"égua", epoca:"época",
+      espaco:"espaço", estatua:"estátua", exito:"êxito", fabrica:"fábrica", familia:"família", feijao:"feijão",
+      femea:"fêmea", ferias:"férias", fogao:"fogão", forca:"força", fuba:"fubá", fumaca:"fumaça",
+      furacao:"furacão", gemeo:"gêmeo", genio:"gênio", grao:"grão", habil:"hábil", heroi:"herói",
+      ima:"imã", imovel:"imóvel", inicio:"início", irmao:"irmão", irma:"irmã", jacare:"jacaré",
+      labio:"lábio", laco:"laço", lamina:"lâmina", lapis:"lápis", leao:"leão", lenco:"lenço",
+      lencol:"lençol", licao:"lição", limao:"limão", liquido:"líquido", maca:"maçã", macarrao:"macarrão",
+      mae:"mãe", magica:"mágica", magico:"mágico", mamae:"mamãe", mamao:"mamão", manha:"manhã",
+      maquina:"máquina", maracuja:"maracujá", mare:"maré", medico:"médico", melao:"melão", musica:"música",
+      negocio:"negócio", noticia:"notícia", oculos:"óculos", odio:"ódio", oleo:"óleo", onca:"onça",
+      opcao:"opção", opiniao:"opinião", pacoca:"paçoca", pagina:"página", palacio:"palácio", papelao:"papelão",
+      paraiso:"paraíso", pavao:"pavão", pe:"pé", peao:"peão", peca:"peça", pedaco:"pedaço",
+      pescoco:"pescoço", picole:"picolé", pimentao:"pimentão", poca:"poça", poco:"poço", portao:"portão",
+      praca:"praça", preco:"preço", premio:"prêmio", rapido:"rápido", razao:"razão", relogio:"relógio",
+      remedio:"remédio", roma:"romã", ruido:"ruído", sabao:"sabão", sabia:"sabiá", saida:"saída",
+      salario:"salário", salao:"salão", saude:"saúde", serie:"série", serio:"sério", sitio:"sítio",
+      sofa:"sofá", taca:"taça", tamandua:"tamanduá", tenis:"tênis", titulo:"título", tubarao:"tubarão",
+      tunel:"túnel", ultimo:"último", unico:"único", varios:"vários", verao:"verão", violao:"violão",
+      vitoria:"vitória", voce:"você", vovo:"vovó", xicara:"xícara", ziper:"zíper", zoologico:"zoológico",
+      amendoa:"amêndoa", ancora:"âncora", aquario:"aquário", balanca:"balança", bisavo:"bisavô", bufalo:"búfalo",
+      bussola:"bússola", cacador:"caçador", cadarco:"cadarço", cafune:"cafuné", calcada:"calçada", calendario:"calendário",
+      camaleao:"camaleão", camarao:"camarão", campeao:"campeão", carroca:"carroça", cemiterio:"cemitério", centopeia:"centopeia",
+      ceramica:"cerâmica", chamine:"chaminé", abraco:"abraço", acougue:"açougue", acucar:"açúcar", algodao:"algodão",
+      alianca:"aliança", amanha:"amanhã", bagunca:"bagunça", brocolis:"brócolis", calcao:"calção", caminhao:"caminhão",
+      cancao:"canção", chacara:"chácara", chao:"chão", chapeu:"chapéu", crianca:"criança", dragao:"dragão",
+      helicoptero:"helicóptero", hipopotamo:"hipopótamo", historia:"história", lingua:"língua", palhaco:"palhaço",
+      passaro:"pássaro", preguica:"preguiça", sanduiche:"sanduíche", triangulo:"triângulo", zangao:"zangão",
+      abracar:"abraçar", aniversario:"aniversário", aracnideo:"aracnídeo", bercario:"berçário"
     };
 
-    function loadState() {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          state = { ...state, ...parsed };
+    function splitSyllables(word) {
+      if (word.includes("-")) return word.split("-").map(splitSyllables).join("-");
+      const vowels = "aeiouáàâãéêíóôõúü";
+      const isVowel = (c) => vowels.includes(c.toLowerCase());
+      const clusters = ["bl","br","cl","cr","dr","fl","fr","gl","gr","pl","pr","tl","tr","vr","ch","lh","nh","qu","gu"];
+
+      const chars = word.split("");
+      const out = [];
+      let cur = "";
+
+      for (let i = 0; i < chars.length; i++) {
+        cur += chars[i];
+        if (isVowel(chars[i])) {
+          if (i + 1 < chars.length && "iu".includes(chars[i + 1].toLowerCase())) {
+            if (i + 2 >= chars.length || !isVowel(chars[i + 2])) {
+              cur += chars[i + 1];
+              i++;
+            }
+          }
+          let j = i + 1;
+          let cons = "";
+          while (j < chars.length && !isVowel(chars[j])) {
+            cons += chars[j];
+            j++;
+          }
+          if (j >= chars.length) {
+            cur += cons;
+            out.push(cur);
+            break;
+          }
+          if (cons.length <= 1) {
+            out.push(cur);
+            cur = "";
+          } else if (cons.length === 2) {
+            if (clusters.includes(cons.toLowerCase())) {
+              out.push(cur);
+              cur = "";
+            } else {
+              cur += cons[0];
+              i++;
+              out.push(cur);
+              cur = "";
+            }
+          } else {
+            const last2 = cons.slice(-2).toLowerCase();
+            if (clusters.includes(last2)) {
+              const keep = cons.slice(0, -2);
+              cur += keep;
+              i += keep.length;
+              out.push(cur);
+              cur = "";
+            } else {
+              cur += cons[0];
+              i++;
+              out.push(cur);
+              cur = "";
+            }
+          }
         }
-      } catch (e) {
-        console.warn('Erro ao carregar progresso:', e);
+      }
+      if (cur && out[out.length - 1] !== cur) out.push(cur);
+      return out.join("-");
+    }
+
+    // Constrói exatamente 1.000 palavras únicas (800 Simples + 200 Desafios Leves)
+    const WORD_BANK = [];
+    const seenWords = new Set();
+
+    for (const raw of SIMPLE_LIST) {
+      const clean = (ACCENTS[raw] || raw).trim().toLowerCase();
+      if (!seenWords.has(clean) && WORD_BANK.filter(x => x.t === 'S').length < 800) {
+        seenWords.add(clean);
+        WORD_BANK.push({ w: clean, s: splitSyllables(clean), t: 'S' });
       }
     }
+
+    for (const raw of CHALLENGE_LIST) {
+      const clean = (ACCENTS[raw] || raw).trim().toLowerCase();
+      if (!seenWords.has(clean) && WORD_BANK.filter(x => x.t === 'C').length < 200) {
+        seenWords.add(clean);
+        WORD_BANK.push({ w: clean, s: splitSyllables(clean), t: 'C' });
+      }
+    }
+
+    const TOTAL_WORDS = WORD_BANK.length; // 1.000
+
+    // =========================================================================
+    // 2. PERSISTÊNCIA E SISTEMA DE MEMORIZAÇÃO VISUAL (SIGHT-WORDS)
+    // =========================================================================
+    const STORAGE_KEY = 'palavrinhas_1000_auto_v2';
+
+    let state = {
+      stars: {},       // { palavra: 0 | 1 | 2 } -> 2 = Memorizada ⭐ (se errar, volta a 0)
+      activePool: [],  // 30 palavras em rotação ativa (24 Simples + 6 Desafios)
+      uppercase: true, // CAIXA ALTA por padrão
+      rounds: 0
+    };
 
     function saveState() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch (e) {
-        console.warn('Erro ao salvar progresso:', e);
-      }
+      } catch (e) {}
     }
 
-    // =========================================================================
-    // CONFIGURAÇÃO DA RODADA
-    // =========================================================================
-    let config = {
-      mode: 'listen', // 'listen' | 'read'
-      level: 'all',   // 'all' | '1' | '2' | '3'
-      size: 8
-    };
-
-    let round = {
-      words: [],
-      index: 0,
-      results: [], // { word, attempts, timeSec, wrongGuesses: [] }
-      wordStartTime: 0,
-      currentAttempts: 0,
-      currentWrongGuesses: [],
-      timerInterval: null,
-      sentence: ''
-    };
-
-    let albumFilter = 'all';
-
-    // =========================================================================
-    // INICIALIZAÇÃO E UI
-    // =========================================================================
-    loadState();
-    updateGlobalUI();
-
-    function formatWord(w) {
-      return state.uppercase ? w.toUpperCase() : w.toLowerCase();
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          state = { ...state, ...JSON.parse(raw) };
+        }
+      } catch (e) {}
+      refillActivePool();
     }
 
-    function toggleCase() {
-      state.uppercase = !state.uppercase;
-      saveState();
-      const btn = document.getElementById('caseToggleBtn');
-      btn.textContent = state.uppercase ? 'ABC' : 'abc';
-      btn.classList.toggle('active', state.uppercase);
+    // Mantém 24 simples + 6 desafios no bloco ativo até ganharem 2 estrelas
+    function refillActivePool() {
+      state.activePool = state.activePool.filter(w => (state.stars[w] || 0) < 2);
 
-      // Atualiza textos visíveis na rodada se estiver jogando
-      if (!document.getElementById('gameScreen').classList.contains('hidden')) {
-        const currentObj = round.words[round.index];
-        if (currentObj) {
-          document.getElementById('directWordText').textContent = formatWord(currentObj.word);
-          document.querySelectorAll('.word-option').forEach(el => {
-            el.textContent = formatWord(el.dataset.raw);
-          });
-          const hintBox = document.getElementById('syllableHintBox');
-          if (!hintBox.classList.contains('hidden')) {
-            hintBox.textContent = '💡 ' + formatWord(separarSilabas(currentObj.word));
-          }
+      const simpleCount = state.activePool.filter(w => {
+        const obj = WORD_BANK.find(x => x.w === w);
+        return obj && obj.t === 'S';
+      }).length;
+
+      const chalCount = state.activePool.filter(w => {
+        const obj = WORD_BANK.find(x => x.w === w);
+        return obj && obj.t === 'C';
+      }).length;
+
+      if (simpleCount < 24) {
+        const need = 24 - simpleCount;
+        const candidates = WORD_BANK.filter(
+          x => x.t === 'S' && (state.stars[x.w] || 0) < 2 && !state.activePool.includes(x.w)
+        );
+        for (const item of candidates.slice(0, need)) {
+          state.activePool.push(item.w);
         }
       }
-      if (!document.getElementById('summaryScreen').classList.contains('hidden')) {
-        document.getElementById('finalSentence').textContent = formatWord(round.sentence);
+
+      if (chalCount < 6) {
+        const need = 6 - chalCount;
+        const candidates = WORD_BANK.filter(
+          x => x.t === 'C' && (state.stars[x.w] || 0) < 2 && !state.activePool.includes(x.w)
+        );
+        for (const item of candidates.slice(0, need)) {
+          state.activePool.push(item.w);
+        }
       }
-    }
 
-    function updateGlobalUI() {
-      const masteredCount = Object.keys(state.mastered).length;
-      const pct = Math.round((masteredCount / TOTAL_WORDS) * 100);
-      document.getElementById('progressText').textContent = `${masteredCount} / ${TOTAL_WORDS.toLocaleString('pt-BR')} (${pct}%)`;
-      document.getElementById('progressBar').style.width = `${pct}%`;
-      document.getElementById('poolSubtitle').textContent = `Banco inédito de ${TOTAL_WORDS.toLocaleString('pt-BR')} palavras`;
-
-      const l1 = ALL_WORDS.filter(x => x.level === 1).length;
-      const l2 = ALL_WORDS.filter(x => x.level === 2).length;
-      const l3 = ALL_WORDS.filter(x => x.level === 3).length;
-      document.getElementById('countAll').textContent = `${TOTAL_WORDS.toLocaleString('pt-BR')} palavras`;
-      document.getElementById('countL1').textContent = `${l1} palavras`;
-      document.getElementById('countL2').textContent = `${l2} palavras`;
-      document.getElementById('countL3').textContent = `${l3} palavras`;
-
-      const btn = document.getElementById('caseToggleBtn');
-      btn.textContent = state.uppercase ? 'ABC' : 'abc';
-      btn.classList.toggle('active', state.uppercase);
-    }
-
-    function selectOption(key, value, el) {
-      config[key] = value;
-      const parent = el.parentElement;
-      parent.querySelectorAll('.choice-card').forEach(c => c.classList.remove('selected'));
-      el.classList.add('selected');
+      saveState();
     }
 
     // =========================================================================
-    // SÍNTESE DE VOZ (PT-BR)
+    // 3. ÁUDIO (WEB SPEECH PT-BR + EFEITOS SONOROS SUAVES SEM URL EXTERNA)
     // =========================================================================
-    function speakText(text, rate = 0.95) {
+    let audioCtx = null;
+
+    function playChime(type) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'ok') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now); // Dó
+          osc.frequency.setValueAtTime(659.25, now + 0.09); // Mi
+          gain.gain.setValueAtTime(0.14, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+          osc.start(now);
+          osc.stop(now + 0.28);
+        } else if (type === 'star') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.08);
+          osc.frequency.setValueAtTime(783.99, now + 0.16);
+          gain.gain.setValueAtTime(0.16, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+          osc.start(now);
+          osc.stop(now + 0.42);
+        } else {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(310, now);
+          osc.frequency.setValueAtTime(260, now + 0.1);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc.start(now);
+          osc.stop(now + 0.22);
+        }
+      } catch (e) {}
+    }
+
+    function speakText(text, rate = 0.92) {
       if (!('speechSynthesis' in window)) return;
       window.speechSynthesis.cancel();
       const utter = new SpeechSynthesisUtterance(text);
@@ -990,429 +635,458 @@
       window.speechSynthesis.speak(utter);
     }
 
-    function speakCurrent(rate = 0.95) {
-      const currentObj = round.words[round.index];
-      if (currentObj) speakText(currentObj.word, rate);
-    }
-
-    function speakSentence() {
-      if (round.sentence) speakText(round.sentence, 0.9);
-    }
-
     // =========================================================================
-    // SEPARADOR DE SÍLABAS EM PORTUGUÊS (AJUDA VISUAL)
+    // 4. MONTAGEM DA RODADA (8 SIMPLES + 2 DESAFIOS, 3 PRIMEIRAS SEMPRE SIMPLES)
     // =========================================================================
-    function separarSilabas(palavra) {
-      if (palavra.includes('-')) {
-        return palavra.split('-').map(separarSilabas).join(' - ');
+    let round = {
+      queue: [],
+      index: 0,
+      results: [],
+      wordStartMs: 0,
+      attempts: 0,
+      wrongGuesses: [],
+      sentence: ''
+    };
+
+    function shuffle(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
       }
-      const vogais = 'aeiouáàâãéêíóôõúü';
-      const isVogal = c => vogais.includes(c.toLowerCase());
-      const inseparaveis = ['bl','br','cl','cr','dr','fl','fr','gl','gr','pl','pr','tl','tr','vr','ch','lh','nh','qu','gu'];
+      return copy;
+    }
 
-      let silabas = [];
-      let atual = '';
-      const chars = palavra.split('');
+    function buildRoundQueue() {
+      refillActivePool();
 
-      for (let i = 0; i < chars.length; i++) {
-        atual += chars[i];
-        if (isVogal(chars[i])) {
-          // Verifica ditongo simples (vogal + i/u átono)
-          if (i + 1 < chars.length && 'iu'.includes(chars[i + 1].toLowerCase())) {
-            // Se depois do i/u vier vogal, o i/u inicia próxima sílaba (ex: sa-ia)
-            if (i + 2 >= chars.length || !isVogal(chars[i + 2])) {
-              atual += chars[i + 1];
-              i++;
-            }
-          }
-          // Olha consoantes seguintes antes da próxima vogal
-          let j = i + 1;
-          let cons = '';
-          while (j < chars.length && !isVogal(chars[j])) {
-            cons += chars[j];
-            j++;
-          }
-          if (j >= chars.length) {
-            // Fim da palavra: anexa consoantes finais
-            atual += cons;
-            silabas.push(atual);
-            break;
-          }
-          if (cons.length === 0) {
-            silabas.push(atual);
-            atual = '';
-          } else if (cons.length === 1) {
-            silabas.push(atual);
-            atual = '';
-          } else if (cons.length === 2) {
-            if (inseparaveis.includes(cons.toLowerCase())) {
-              silabas.push(atual);
-              atual = '';
-            } else {
-              atual += cons[0];
-              i++;
-              silabas.push(atual);
-              atual = '';
-            }
-          } else {
-            // 3+ consoantes
-            const ultimas2 = cons.slice(-2).toLowerCase();
-            if (inseparaveis.includes(ultimas2)) {
-              const fica = cons.slice(0, -2);
-              atual += fica;
-              i += fica.length;
-              silabas.push(atual);
-              atual = '';
-            } else {
-              atual += cons[0];
-              i++;
-              silabas.push(atual);
-              atual = '';
+      let simplePool = state.activePool
+        .map(w => WORD_BANK.find(x => x.w === w))
+        .filter(x => x && x.t === 'S');
+
+      if (simplePool.length < 8) {
+        simplePool = [...simplePool, ...shuffle(WORD_BANK.filter(x => x.t === 'S')).slice(0, 12)];
+      }
+
+      let chalPool = state.activePool
+        .map(w => WORD_BANK.find(x => x.w === w))
+        .filter(x => x && x.t === 'C');
+
+      if (chalPool.length < 2) {
+        chalPool = [...chalPool, ...shuffle(WORD_BANK.filter(x => x.t === 'C')).slice(0, 6)];
+      }
+
+      // Prioriza levemente palavras que já têm 1 estrela para fechar a memorização
+      const prioritizeOneStar = (list) =>
+        shuffle(list).sort((a, b) => (state.stars[b.w] || 0) - (state.stars[a.w] || 0));
+
+      const selectedSimple = prioritizeOneStar(simplePool).slice(0, 8);
+      const selectedChal = prioritizeOneStar(chalPool).slice(0, 2);
+
+      // As 3 primeiras são SEMPRE simples para dar ritmo e confiança
+      const firstThree = selectedSimple.slice(0, 3);
+      const nextSeven = shuffle([...selectedSimple.slice(3, 8), ...selectedChal]);
+
+      return [...firstThree, ...nextSeven];
+    }
+
+    // =========================================================================
+    // 5. FILTRO ANTI-PEGADINHA PARA DISLEXIA (SEM ESPELHAMENTO b/d e p/q)
+    // =========================================================================
+    function hasMirrorTrap(wordA, wordB) {
+      const mirrorPairs = [['b', 'd'], ['p', 'q']];
+      // Evita iniciais espelhadas (ex: BOLA vs DOLA, PATO vs QATO)
+      for (const [x, y] of mirrorPairs) {
+        if ((wordA[0] === x && wordB[0] === y) || (wordA[0] === y && wordB[0] === x)) {
+          return true;
+        }
+      }
+      // Evita palavras de mesmo tamanho que diferem por 1 letra espelhada em qualquer posição
+      if (wordA.length === wordB.length) {
+        let diffCount = 0;
+        let hasMirrorDiff = false;
+        for (let i = 0; i < wordA.length; i++) {
+          if (wordA[i] !== wordB[i]) {
+            diffCount++;
+            for (const [x, y] of mirrorPairs) {
+              if ((wordA[i] === x && wordB[i] === y) || (wordA[i] === y && wordB[i] === x)) {
+                hasMirrorDiff = true;
+              }
             }
           }
         }
+        if (diffCount === 1 && hasMirrorDiff) return true;
       }
-      if (atual && silabas[silabas.length - 1] !== atual) {
-        silabas.push(atual);
+      return false;
+    }
+
+    function getDistractors(targetObj) {
+      const target = targetObj.w;
+      const valid = WORD_BANK.filter(item => {
+        if (item.w === target) return false;
+        if (hasMirrorTrap(target, item.w)) return false;
+        return Math.abs(item.w.length - target.length) <= 2;
+      });
+
+      const sameLen = shuffle(valid.filter(x => x.w.length === target.length));
+      const nearLen = shuffle(valid.filter(x => x.w.length !== target.length));
+      const candidates = [...sameLen.slice(0, 3), ...nearLen.slice(0, 4)];
+
+      const unique = [];
+      for (const c of shuffle(candidates)) {
+        if (!unique.includes(c.w) && c.w !== target) unique.push(c.w);
+        if (unique.length === 3) break;
       }
-      return silabas.join('-');
+      return unique;
     }
 
     // =========================================================================
-    // LÓGICA DA RODADA (ZERO REPETIÇÃO ATÉ DOMINAR AS 1.000)
+    // 6. INTERFACE E FLUXO DO JOGO
     // =========================================================================
-    function shuffle(arr) {
-      const a = [...arr];
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
+    function formatCase(str) {
+      return state.uppercase ? str.toUpperCase() : str.toLowerCase();
     }
 
-    function pickRoundWords() {
-      let pool = ALL_WORDS;
-      if (config.level !== 'all') {
-        const lvl = Number(config.level);
-        pool = ALL_WORDS.filter(x => x.level === lvl);
-      }
+    function updateHomeUI() {
+      const memCount = Object.values(state.stars).filter(v => v >= 2).length;
+      const pct = Math.round((memCount / TOTAL_WORDS) * 100);
+      document.getElementById('homeProgressText').textContent =
+        `⭐ ${memCount} de 1.000 palavras memorizadas`;
+      document.getElementById('homeProgressBar').style.width = `${pct}%`;
 
-      // 1. Prioriza palavras que ainda NÃO foram dominadas de primeira
-      let notMastered = pool.filter(x => !state.mastered[x.word]);
-
-      // Se todas do nível já foram dominadas, libera o pool inteiro novamente
-      if (notMastered.length < config.size) {
-        const masteredPool = shuffle(pool.filter(x => state.mastered[x.word]));
-        notMastered = [...shuffle(notMastered), ...masteredPool];
-      } else {
-        // Coloca palavras com histórico de erro primeiro para reforço, misturadas com inéditas
-        const withErrors = shuffle(notMastered.filter(x => (state.errors[x.word] || 0) > 0));
-        const pureNew = shuffle(notMastered.filter(x => !(state.errors[x.word] || 0)));
-        notMastered = [...withErrors.slice(0, 2), ...pureNew];
-      }
-
-      return notMastered.slice(0, config.size);
+      const label = state.uppercase ? 'abc' : 'ABC';
+      document.getElementById('btnCaseHome').textContent = label;
+      document.getElementById('btnCaseGame').textContent = label;
     }
 
-    function pickDistractors(targetObj, count = 3) {
-      const target = targetObj.word;
-      const firstChar = target[0];
+    function toggleCase() {
+      state.uppercase = !state.uppercase;
+      saveState();
+      updateHomeUI();
 
-      // Busca palavras parecidas (mesma letra inicial ou tamanho próximo) para evitar chute
-      let candidates = ALL_WORDS.filter(x => x.word !== target && x.word[0] === firstChar && Math.abs(x.word.length - target.length) <= 2);
-      if (candidates.length < count) {
-        const extra = ALL_WORDS.filter(x => x.word !== target && x.word[0] === firstChar);
-        candidates = [...new Set([...candidates, ...extra])];
+      const cur = round.queue[round.index];
+      if (cur && !document.getElementById('screenGame').classList.contains('hidden')) {
+        document.getElementById('syllableHintBox').textContent = formatCase(cur.s);
+        document.querySelectorAll('#optionsGrid button').forEach(btn => {
+          btn.textContent = formatCase(btn.dataset.word);
+        });
       }
-      if (candidates.length < count) {
-        const fallback = ALL_WORDS.filter(x => x.word !== target);
-        candidates = [...candidates, ...shuffle(fallback).slice(0, 10)];
+      if (round.sentence && !document.getElementById('screenSummary').classList.contains('hidden')) {
+        document.getElementById('sumSentence').textContent = formatCase(round.sentence);
       }
+    }
 
-      return shuffle(candidates).slice(0, count).map(x => x.word);
+    function speakCurrentWord(rate = 0.92) {
+      const cur = round.queue[round.index];
+      if (cur) speakText(cur.w, rate);
+    }
+
+    function speakBonusSentence() {
+      if (round.sentence) speakText(round.sentence, 0.9);
+    }
+
+    function revealSyllables() {
+      document.getElementById('syllableHintBox').classList.remove('hidden');
     }
 
     function startRound() {
-      round.words = pickRoundWords();
+      round.queue = buildRoundQueue();
       round.index = 0;
       round.results = [];
 
-      document.getElementById('startScreen').classList.add('hidden');
-      document.getElementById('summaryScreen').classList.add('hidden');
-      document.getElementById('gameScreen').classList.remove('hidden');
+      document.getElementById('screenHome').classList.add('hidden');
+      document.getElementById('screenSummary').classList.add('hidden');
+      document.getElementById('screenSummary').classList.remove('flex');
 
-      loadCurrentWord();
+      const gameScreen = document.getElementById('screenGame');
+      gameScreen.classList.remove('hidden');
+      gameScreen.classList.add('flex');
+
+      renderWord();
     }
 
-    function loadCurrentWord() {
-      const currentObj = round.words[round.index];
-      round.wordStartTime = Date.now();
-      round.currentAttempts = 0;
-      round.currentWrongGuesses = [];
+    function renderWord() {
+      const cur = round.queue[round.index];
+      round.wordStartMs = Date.now();
+      round.attempts = 0;
+      round.wrongGuesses = [];
 
-      document.getElementById('stepCounter').textContent = `Palavra ${round.index + 1} de ${round.words.length}`;
+      const step = round.index + 1;
+      document.getElementById('roundStepBadge').textContent = `${step} / 10`;
+      document.getElementById('roundStepBar').style.width = `${step * 10}%`;
+
+      const sylBox = document.getElementById('syllableHintBox');
+      sylBox.classList.add('hidden');
+      sylBox.textContent = formatCase(cur.s);
+
       document.getElementById('feedbackBanner').textContent = '';
-      const hintBox = document.getElementById('syllableHintBox');
-      hintBox.classList.add('hidden');
-      hintBox.textContent = '';
 
-      if (round.timerInterval) clearInterval(round.timerInterval);
-      document.getElementById('timerDisplay').textContent = '⏱️ 0s';
-      round.timerInterval = setInterval(() => {
-        const sec = Math.floor((Date.now() - round.wordStartTime) / 1000);
-        document.getElementById('timerDisplay').textContent = `⏱️ ${sec}s`;
-      }, 500);
+      const options = shuffle([cur.w, ...getDistractors(cur)]);
+      const grid = document.getElementById('optionsGrid');
+      grid.innerHTML = '';
 
-      if (config.mode === 'listen') {
-        document.getElementById('listenPromptArea').classList.remove('hidden');
-        document.getElementById('readPromptArea').classList.add('hidden');
-        document.getElementById('optionsContainer').classList.remove('hidden');
-        document.getElementById('voiceEvalContainer').classList.add('hidden');
+      options.forEach(wordStr => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn-choice dyslexia-text rounded-2xl py-5 px-4 text-2xl sm:text-3xl font-black text-slate-800 text-center';
+        btn.dataset.word = wordStr;
+        btn.textContent = formatCase(wordStr);
+        btn.onclick = () => handleChoice(wordStr, btn);
+        grid.appendChild(btn);
+      });
 
-        const distractors = pickDistractors(currentObj, 3);
-        const choices = shuffle([currentObj.word, ...distractors]);
+      // Toca o áudio automaticamente ao carregar a palavra
+      setTimeout(() => speakCurrentWord(0.92), 180);
+    }
 
-        const container = document.getElementById('optionsContainer');
-        container.innerHTML = '';
-        choices.forEach(w => {
-          const btn = document.createElement('button');
-          btn.className = 'word-option';
-          btn.dataset.raw = w;
-          btn.textContent = formatWord(w);
-          btn.onclick = () => handleOptionClick(w, btn);
-          container.appendChild(btn);
+    function handleChoice(chosen, btn) {
+      const cur = round.queue[round.index];
+      round.attempts++;
+
+      if (chosen === cur.w) {
+        btn.classList.add('is-correct');
+        document.querySelectorAll('#optionsGrid button').forEach(b => (b.style.pointerEvents = 'none'));
+
+        const sec = Math.max(1, Math.round((Date.now() - round.wordStartMs) / 1000));
+        const firstTry = round.attempts === 1;
+        const banner = document.getElementById('feedbackBanner');
+
+        if (firstTry) {
+          const prev = state.stars[cur.w] || 0;
+          const next = Math.min(2, prev + 1);
+          state.stars[cur.w] = next;
+
+          if (prev < 2 && next === 2) {
+            playChime('star');
+            banner.className = 'min-h-[32px] flex items-center justify-center text-center font-black text-base sm:text-lg text-emerald-700';
+            banner.textContent = '⭐ Memorizada! Mais uma conquistada!';
+          } else {
+            playChime('ok');
+            banner.className = 'min-h-[32px] flex items-center justify-center text-center font-black text-base sm:text-lg text-emerald-700';
+            banner.textContent = '✅ Muito bem! De primeira!';
+          }
+        } else {
+          // Se trocou a palavra, estrelas voltam a 0 para automatizar o reconhecimento visual
+          state.stars[cur.w] = 0;
+          playChime('ok');
+          banner.className = 'min-h-[32px] flex items-center justify-center text-center font-black text-base sm:text-lg text-emerald-700';
+          banner.textContent = '👏 Isso aí! Acertou!';
+        }
+
+        round.results.push({
+          word: cur.w,
+          type: cur.t,
+          attempts: round.attempts,
+          sec,
+          wrongGuesses: [...round.wrongGuesses]
         });
 
-        setTimeout(() => speakCurrent(0.95), 250);
+        refillActivePool();
+        updateHomeUI();
+
+        setTimeout(() => {
+          round.index++;
+          if (round.index < round.queue.length) {
+            renderWord();
+          } else {
+            finishRound();
+          }
+        }, 780);
       } else {
-        document.getElementById('listenPromptArea').classList.add('hidden');
-        document.getElementById('readPromptArea').classList.remove('hidden');
-        document.getElementById('optionsContainer').classList.add('hidden');
-        document.getElementById('voiceEvalContainer').classList.remove('hidden');
+        btn.classList.add('is-wrong');
+        round.wrongGuesses.push(chosen);
+        playChime('err');
 
-        document.getElementById('directWordText').textContent = formatWord(currentObj.word);
+        const banner = document.getElementById('feedbackBanner');
+        banner.className = 'min-h-[32px] flex items-center justify-center text-center font-extrabold text-sm sm:text-base text-amber-800';
+        banner.textContent = `Essa é "${formatCase(chosen)}". Ouça de novo!`;
+        speakText(cur.w, 0.75);
       }
-    }
-
-    function showSyllables() {
-      const currentObj = round.words[round.index];
-      if (!currentObj) return;
-      const hintBox = document.getElementById('syllableHintBox');
-      hintBox.textContent = '💡 ' + formatWord(separarSilabas(currentObj.word));
-      hintBox.classList.remove('hidden');
-    }
-
-    function handleOptionClick(chosenWord, btnEl) {
-      const target = round.words[round.index].word;
-      round.currentAttempts++;
-
-      if (chosenWord === target) {
-        btnEl.classList.add('correct');
-        document.querySelectorAll('.word-option').forEach(b => b.style.pointerEvents = 'none');
-        const elapsed = Math.max(1, Math.round((Date.now() - round.wordStartTime) / 1000));
-
-        document.getElementById('feedbackBanner').style.color = '#16a34a';
-        document.getElementById('feedbackBanner').textContent =
-          round.currentAttempts === 1 ? '⭐ Muito bem! De primeira!' : '👏 Isso! Acertou!';
-
-        recordWordResult(target, round.currentAttempts, elapsed, round.currentWrongGuesses);
-        setTimeout(nextWord, 850);
-      } else {
-        btnEl.classList.add('wrong');
-        round.currentWrongGuesses.push(chosenWord);
-        document.getElementById('feedbackBanner').style.color = '#d97706';
-        document.getElementById('feedbackBanner').textContent = `Ops! Você tocou em "${formatWord(chosenWord)}". Tente de novo!`;
-        speakText(target, 0.8);
-      }
-    }
-
-    function handleDirectRead(firstTry) {
-      const target = round.words[round.index].word;
-      const elapsed = Math.max(1, Math.round((Date.now() - round.wordStartTime) / 1000));
-      const attempts = firstTry ? 1 : 2;
-      recordWordResult(target, attempts, elapsed, firstTry ? [] : ['ajuda']);
-      nextWord();
-    }
-
-    function recordWordResult(word, attempts, timeSec, wrongGuesses) {
-      round.results.push({ word, attempts, timeSec, wrongGuesses });
-
-      if (attempts === 1) {
-        state.mastered[word] = true;
-      } else {
-        state.errors[word] = (state.errors[word] || 0) + 1;
-      }
-      saveState();
-      updateGlobalUI();
-    }
-
-    function nextWord() {
-      round.index++;
-      if (round.index < round.words.length) {
-        loadCurrentWord();
-      } else {
-        finishRound();
-      }
-    }
-
-    function quitToMenu() {
-      if (round.timerInterval) clearInterval(round.timerInterval);
-      document.getElementById('gameScreen').classList.add('hidden');
-      document.getElementById('summaryScreen').classList.add('hidden');
-      document.getElementById('startScreen').classList.remove('hidden');
     }
 
     // =========================================================================
-    // FINALIZAÇÃO E RELATÓRIO PARA WHATSAPP
+    // 7. CELEBRAÇÃO E RELATÓRIO WHATSAPP NO PADRÃO EXATO
     // =========================================================================
-    function generateRoundSentence(wordsList) {
-      const w = wordsList.map(x => x.toUpperCase());
+    function generateRoundSentence(results) {
+      const words = results.filter(r => r.type === 'S').map(r => r.word.toUpperCase());
+      const w1 = words[0] || 'BOLA';
+      const w2 = words[1] || 'GATO';
+      const w3 = words[2] || 'CASA';
+      const w4 = words[3] || 'VACA';
+
       const templates = [
-        `A EVA LEU ${w[0]} E ${w[1]}. O PAPAI VIU ${w[2]} E ${w[3]}.`,
-        `HOJE EU LI ${w[0]}, ${w[1]} E ${w[2]}. QUERO VER ${w[3]}!`,
-        `A ANA ACHOU ${w[0]} PERTO DE ${w[1]}. A MAMÃE GOSTOU DE ${w[2]}.`,
-        `NO PASSEIO VI ${w[0]} E ${w[1]}. DEPOIS LEVEI ${w[2]} E ${w[3]}.`
+        `A ${w1} VIU O ${w2}. A ${w3} QUER A ${w4}.`,
+        `O ${w1} VIU A ${w2}. O ${w3} QUER O ${w4}.`,
+        `A ${w1} ACHOU O ${w2} E A ${w3}.`
       ];
       return templates[Math.floor(Math.random() * templates.length)];
     }
 
     function finishRound() {
-      if (round.timerInterval) clearInterval(round.timerInterval);
-      state.roundsPlayed = (state.roundsPlayed || 0) + 1;
+      state.rounds = (state.rounds || 0) + 1;
       saveState();
 
-      document.getElementById('gameScreen').classList.add('hidden');
-      document.getElementById('summaryScreen').classList.remove('hidden');
+      document.getElementById('screenGame').classList.add('hidden');
+      document.getElementById('screenGame').classList.remove('flex');
 
-      const total = round.results.length;
+      const sumScreen = document.getElementById('screenSummary');
+      sumScreen.classList.remove('hidden');
+      sumScreen.classList.add('flex');
+
+      const total = round.results.length; // 10
       const firstTryCount = round.results.filter(r => r.attempts === 1).length;
-      const pctFirst = Math.round((firstTryCount / total) * 100);
-      const avgTime = Math.round(round.results.reduce((acc, r) => acc + r.timeSec, 0) / total);
-      const masteredTotal = Object.keys(state.mastered).length;
+      const pct = Math.round((firstTryCount / total) * 100);
+      const avgSec = Math.round(round.results.reduce((acc, r) => acc + r.sec, 0) / total);
+      const totalMemorized = Object.values(state.stars).filter(v => v >= 2).length;
 
-      document.getElementById('sumFirstTry').textContent = `${firstTryCount}/${total}`;
-      document.getElementById('sumAvgTime').textContent = `${avgTime}s`;
-      document.getElementById('sumMastered').textContent = `${masteredTotal}/${TOTAL_WORDS}`;
+      document.getElementById('sumFirstTry').textContent = `${firstTryCount}/${total} (${pct}%)`;
+      document.getElementById('sumAvgTime').textContent = `${avgSec}s`;
+      document.getElementById('sumTotalMem').textContent = `${totalMemorized} ⭐`;
 
-      round.sentence = generateRoundSentence(round.results.map(r => r.word));
-      document.getElementById('finalSentence').textContent = formatWord(round.sentence);
+      if (pct >= 80) {
+        document.getElementById('summaryEmoji').textContent = '🏆';
+        document.getElementById('summaryTitle').textContent = 'Parabéns! Show!';
+        document.getElementById('summarySubtitle').textContent = `Você acertou ${firstTryCount} de 10 de primeira!`;
+      } else {
+        document.getElementById('summaryEmoji').textContent = '🌟';
+        document.getElementById('summaryTitle').textContent = 'Muito bem!';
+        document.getElementById('summarySubtitle').textContent = 'Você está ficando cada vez mais rápida!';
+      }
+
+      round.sentence = generateRoundSentence(round.results);
+      document.getElementById('sumSentence').textContent = formatCase(round.sentence);
 
       const now = new Date();
-      const dateStr = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      const dd = String(now.getDate()).padStart(2, '0');
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const yyyy = now.getFullYear();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const min = String(now.getMinutes()).padStart(2, '0');
+      const dateFormatted = `${dd}/${mm}/${yyyy} ${hh}:${min}`;
 
       const lines = round.results.map(r => {
         if (r.attempts === 1) {
-          return `✅ ${r.word} — de primeira, ${r.timeSec}s`;
-        } else {
-          const trocou = r.wrongGuesses.filter(g => g !== 'ajuda').join(', ');
-          const extra = trocou ? ` (trocou por: ${trocou})` : ' (com ajuda)';
-          return `🔁 ${r.word} — ${r.attempts} tentativas, ${r.timeSec}s${extra}`;
+          return `✅ ${r.word} — de primeira, ${r.sec}s`;
         }
+        return `🔁 ${r.word} — ${r.attempts} tentativas, ${r.sec}s (trocou por: ${r.wrongGuesses.join(', ')})`;
       });
 
-      const slowest = [...round.results]
-        .sort((a, b) => b.timeSec - a.timeSec)
+      const slowestTwo = [...round.results]
+        .sort((a, b) => b.sec - a.sec)
         .slice(0, 2)
         .map(r => r.word)
         .join(', ');
 
-      const report = [
-        `📚 *Palavrinhas 1000 — relatório*`,
-        `📅 ${dateStr}`,
+      const reportText = [
+        `📚 *Palavrinhas — relatório*`,
+        `📅 ${dateFormatted}`,
         ``,
-        `✅ De primeira: ${firstTryCount} de ${total} (${pctFirst}%)`,
-        `⏱️ Tempo médio por palavra: ${avgTime}s`,
+        `✅ De primeira: ${firstTryCount} de 10 (${pct}%)`,
+        `⏱️ Tempo médio por palavra: ${avgSec}s`,
+        `⭐ Memorizadas no total: ${totalMemorized} de 1.000`,
         ``,
         `*Palavra por palavra*`,
         ...lines,
         ``,
-        `🐢 Mais demoradas: ${slowest}`,
-        `🗣️ Frase: *“${round.sentence}”*`,
-        ``,
-        `🏆 Banco de 1.000 palavras: *${masteredTotal} dominadas* (${TOTAL_WORDS - masteredTotal} inéditas restantes).`
+        `🐢 Mais demoradas: ${slowestTwo}`,
+        `🗣️ Frase: *“${round.sentence}”*`
       ].join('\n');
 
-      document.getElementById('reportText').textContent = report;
-    }
-
-    function shareWhatsApp() {
-      const text = document.getElementById('reportText').textContent;
-      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
-      window.open(url, '_blank');
+      document.getElementById('reportBox').textContent = reportText;
     }
 
     function copyReport() {
-      const text = document.getElementById('reportText').textContent;
-      navigator.clipboard.writeText(text).then(() => {
-        alert('Relatório copiado! Agora é só colar no WhatsApp.');
-      });
+      const text = document.getElementById('reportBox').textContent;
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        const badge = document.getElementById('copyConfirm');
+        badge.style.opacity = '1';
+        setTimeout(() => (badge.style.opacity = '0'), 2200);
+      } catch (e) {}
+      document.body.removeChild(ta);
+    }
+
+    function shareWhatsApp() {
+      const text = document.getElementById('reportBox').textContent;
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
     }
 
     // =========================================================================
-    // ÁLBUM DAS 1.000 PALAVRAS
+    // 8. VISUALIZAÇÃO DISCRETA DO ÁLBUM DE PALAVRAS
     // =========================================================================
+    let albumMode = 'memorized';
+
     function openAlbum() {
-      document.getElementById('albumModal').classList.remove('hidden');
-      const masteredCount = Object.keys(state.mastered).length;
-      document.getElementById('albumStatsLine').textContent =
-        `Você já dominou ${masteredCount} de ${TOTAL_WORDS.toLocaleString('pt-BR')} palavras! Toque em qualquer palavra para ouvir.`;
-      renderAlbumChips();
+      const modal = document.getElementById('albumModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      const mem = Object.values(state.stars).filter(v => v >= 2).length;
+      document.getElementById('albumStats').textContent =
+        `⭐ ${mem} de 1.000 memorizadas • Toque em uma palavra para ouvir`;
+      renderAlbum();
     }
 
     function closeAlbum() {
-      document.getElementById('albumModal').classList.add('hidden');
+      const modal = document.getElementById('albumModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
     }
 
-    function closeAlbumOnBackdrop(e) {
-      if (e.target.id === 'albumModal') closeAlbum();
+    function filterAlbum(mode, btn) {
+      albumMode = mode;
+      document.querySelectorAll('.alb-tab').forEach(b => {
+        b.className = 'alb-tab px-3 py-1.5 rounded-xl text-xs font-extrabold bg-white border border-slate-200 text-slate-700';
+      });
+      btn.className = 'alb-tab px-3 py-1.5 rounded-xl text-xs font-extrabold bg-emerald-600 text-white';
+      renderAlbum();
     }
 
-    function setAlbumFilter(filter, btn) {
-      albumFilter = filter;
-      btn.parentElement.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderAlbumChips();
-    }
-
-    function renderAlbumChips() {
-      const query = document.getElementById('albumSearch').value.trim().toLowerCase();
-      const container = document.getElementById('albumChips');
+    function renderAlbum() {
+      const container = document.getElementById('albumContainer');
       container.innerHTML = '';
 
-      const filtered = ALL_WORDS.filter(item => {
-        if (query && !item.word.includes(query)) return false;
-        const isMastered = !!state.mastered[item.word];
-        const isHard = (state.errors[item.word] || 0) > 0 && !isMastered;
-        if (albumFilter === 'mastered') return isMastered;
-        if (albumFilter === 'pending') return !isMastered;
-        if (albumFilter === 'hard') return isHard;
+      const list = WORD_BANK.filter(item => {
+        const st = state.stars[item.w] || 0;
+        if (albumMode === 'memorized') return st >= 2;
+        if (albumMode === 'learning') return state.activePool.includes(item.w) && st < 2;
         return true;
       });
 
+      if (list.length === 0) {
+        container.innerHTML = '<p class="text-xs font-bold text-slate-500 p-2">Nenhuma palavra nesta aba ainda. Vamos jogar!</p>';
+        return;
+      }
+
       const frag = document.createDocumentFragment();
-      filtered.forEach(item => {
-        const span = document.createElement('span');
-        const isMastered = !!state.mastered[item.word];
-        const isHard = (state.errors[item.word] || 0) > 0 && !isMastered;
-        span.className = 'chip' + (isMastered ? ' mastered' : isHard ? ' hard' : '');
-        span.textContent = (isMastered ? '✅ ' : isHard ? '🔁 ' : '') + formatWord(item.word);
-        span.style.cursor = 'pointer';
-        span.onclick = () => speakText(item.word, 0.9);
-        frag.appendChild(span);
+      list.slice(0, 350).forEach(item => {
+        const st = state.stars[item.w] || 0;
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        if (st >= 2) {
+          chip.className = 'px-2.5 py-1 rounded-lg text-xs font-extrabold bg-emerald-100 text-emerald-900 border border-emerald-300';
+          chip.textContent = `⭐ ${formatCase(item.w)}`;
+        } else if (state.activePool.includes(item.w)) {
+          chip.className = 'px-2.5 py-1 rounded-lg text-xs font-extrabold bg-amber-100 text-amber-900 border border-amber-300';
+          chip.textContent = `${st === 1 ? '🌟' : '👀'} ${formatCase(item.w)}`;
+        } else {
+          chip.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-600';
+          chip.textContent = formatCase(item.w);
+        }
+        chip.onclick = () => speakText(item.w, 0.9);
+        frag.appendChild(chip);
       });
       container.appendChild(frag);
     }
 
-    function resetProgress() {
-      if (confirm('Tem certeza que deseja zerar todas as palavras dominadas e recomeçar do 0/1.000?')) {
-        state.mastered = {};
-        state.errors = {};
-        state.roundsPlayed = 0;
-        saveState();
-        updateGlobalUI();
-        renderAlbumChips();
-      }
-    }
+    // Inicialização
+    loadState();
+    updateHomeUI();
   </script>
 </body>
 </html>
