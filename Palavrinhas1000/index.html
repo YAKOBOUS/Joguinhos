@@ -5,13 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Palavrinhas</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    /* Conforto visual para dislexia: fundo creme suave, contraste sem reflexo e espaçamento amplo */
+    /* Conforto visual para dislexia: fundo creme quente, sem reflexo e fonte limpa */
     body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-family: Verdana, 'Segoe UI', Tahoma, Geneva, sans-serif;
       background-color: #FFFDF7;
       color: #1E293B;
       letter-spacing: 0.06em;
@@ -27,7 +24,7 @@
     .card-surface {
       background-color: #FFFFFF;
       border: 2px solid #EFE7D4;
-      box-shadow: 0 10px 28px -8px rgba(160, 135, 90, 0.14);
+      box-shadow: 0 10px 28px -8px rgba(160, 135, 90, 0.15);
     }
 
     .btn-choice {
@@ -53,17 +50,31 @@
       background-color: #FEF3C7;
       border-color: #D97706;
       color: #78350F;
-      opacity: 0.55;
+      opacity: 0.52;
       pointer-events: none;
     }
 
+    .syllable-dot {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border-radius: 9999px;
+      background-color: #4F46E5;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .syllable-dot.pulse {
+      transform: scale(1.38);
+      background-color: #F59E0B;
+    }
+
     @keyframes popSmooth {
-      0% { transform: scale(0.96); opacity: 0.4; }
+      0% { transform: scale(0.97); opacity: 0.5; }
       100% { transform: scale(1); opacity: 1; }
     }
 
     .animate-pop {
-      animation: popSmooth 0.22s ease-out forwards;
+      animation: popSmooth 0.2s ease-out forwards;
     }
   </style>
 </head>
@@ -71,125 +82,121 @@
 
   <div class="w-full max-w-lg flex flex-col gap-4">
 
-    <!-- TELA 1: INÍCIO ULTRA LIMPO (ZERO CONFIGURAÇÃO) -->
-    <main id="screenHome" class="card-surface rounded-3xl p-6 sm:p-8 flex flex-col items-center text-center gap-6 animate-pop relative">
-      <!-- Controles discretos nos cantos superiores -->
+    <!-- TELA 1: INÍCIO ZERO CONFIGURAÇÃO -->
+    <main id="screenHome" class="card-surface rounded-3xl p-6 sm:p-8 flex flex-col items-center text-center gap-6 animate-pop">
       <div class="w-full flex items-center justify-between">
-        <button onclick="openAlbum()" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 font-extrabold text-xs border border-amber-200 transition">
-          ⭐ Ver palavras
+        <button onclick="openAlbum()" class="px-3.5 py-2 rounded-2xl bg-amber-50 hover:bg-amber-100 text-amber-950 font-bold text-xs border border-amber-200 transition">
+          ⭐ Minhas palavras
         </button>
-        <button id="btnCaseHome" onclick="toggleCase()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs border border-slate-200 transition">
+        <button id="btnCaseHome" onclick="toggleCase()" class="px-3.5 py-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-slate-200 transition">
           abc
         </button>
       </div>
 
-      <!-- Ícone e Título -->
-      <div class="flex flex-col items-center gap-2 mt-1">
-        <div class="w-20 h-20 rounded-3xl bg-amber-100 border-2 border-amber-200 flex items-center justify-center text-5xl shadow-xs">
+      <div class="flex flex-col items-center gap-2">
+        <div class="w-20 h-20 rounded-3xl bg-amber-100 border-2 border-amber-200 flex items-center justify-center text-5xl">
           📚
         </div>
-        <h1 class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight mt-1">Palavrinhas</h1>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tight mt-1">Palavrinhas</h1>
       </div>
 
-      <!-- Barra de Progresso das 1.000 Palavras -->
-      <div class="w-full bg-[#FFF9EB] border-2 border-amber-200/80 rounded-2xl p-4">
-        <div id="homeProgressText" class="text-sm sm:text-base font-black text-amber-950 mb-2">
-          ⭐ 0 de 1.000 palavras memorizadas
+      <div class="w-full bg-[#FFF9EB] border-2 border-amber-200 rounded-2xl p-4">
+        <div id="homeProgressText" class="text-sm sm:text-base font-extrabold text-amber-950 mb-2">
+          ⭐ 0 / 1.000 memorizadas
         </div>
         <div class="w-full h-4 bg-amber-100 rounded-full overflow-hidden border border-amber-200">
           <div id="homeProgressBar" class="h-full bg-gradient-to-r from-amber-400 via-emerald-500 to-teal-500 rounded-full transition-all duration-500" style="width: 0%"></div>
         </div>
       </div>
 
-      <!-- Botão Único Grande -->
-      <button onclick="startRound()" class="w-full py-5 rounded-3xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-black text-2xl shadow-lg shadow-emerald-600/25 border-b-4 border-emerald-800 transition">
+      <button onclick="startRound()" class="w-full py-5 rounded-3xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-extrabold text-2xl shadow-lg shadow-emerald-600/25 border-b-4 border-emerald-800 transition">
         ▶️ JOGAR
       </button>
     </main>
 
-    <!-- TELA 2: JOGO ATIVO (MODO ÚNICO: OUVIR E TOCAR) -->
+    <!-- TELA 2: JOGO ATIVO (OUVIR E TOCAR) -->
     <section id="screenGame" class="card-surface rounded-3xl p-5 sm:p-6 hidden flex-col gap-4 animate-pop">
-      <!-- Barra superior minimalista -->
       <div class="flex items-center justify-between gap-2">
-        <span id="roundStepBadge" class="px-3.5 py-1.5 rounded-xl bg-amber-100 text-amber-950 font-black text-sm">
+        <span id="roundStepBadge" class="px-3.5 py-1.5 rounded-xl bg-amber-100 text-amber-950 font-extrabold text-sm">
           1 / 10
         </span>
-        <div class="flex-1 h-2.5 bg-amber-100 rounded-full overflow-hidden mx-1">
+        <div class="flex-1 h-3 bg-amber-100 rounded-full overflow-hidden mx-1">
           <div id="roundStepBar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 10%"></div>
         </div>
-        <button id="btnCaseGame" onclick="toggleCase()" class="px-2.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-extrabold text-xs border border-slate-200">
+        <button id="btnCaseGame" onclick="toggleCase()" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs border border-slate-200">
           abc
         </button>
       </div>
 
-      <!-- Área de Áudio e Dica Silábica -->
+      <!-- Painel de Áudio e Bolinhas de Sílabas (Zero letras reveladas) -->
       <div class="rounded-2xl bg-[#FFF9EB] border-2 border-amber-200 p-4 sm:p-5 text-center flex flex-col items-center gap-3">
-        <button onclick="speakCurrentWord(0.92)" class="w-full sm:w-auto px-6 py-4 rounded-2xl bg-sky-600 hover:bg-sky-700 active:scale-95 text-white font-black text-lg sm:text-xl shadow-md border-b-4 border-sky-800 flex items-center justify-center gap-2.5 transition">
-          🔊 Ouvir de novo
-        </button>
-
-        <div class="flex items-center justify-center gap-2.5 w-full">
-          <button onclick="speakCurrentWord(0.65)" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-indigo-100 hover:bg-indigo-200 active:scale-95 text-indigo-950 font-extrabold text-sm border border-indigo-200 transition">
+        <div class="grid grid-cols-3 gap-2 w-full">
+          <button onclick="speakCurrentWord(0.92)" class="py-3.5 px-2 rounded-2xl bg-sky-600 hover:bg-sky-700 active:scale-95 text-white font-extrabold text-sm sm:text-base shadow-sm border-b-4 border-sky-800 transition">
+            🔊 Ouvir
+          </button>
+          <button onclick="speakCurrentWord(0.62)" class="py-3.5 px-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-sm sm:text-base shadow-sm border-b-4 border-indigo-800 transition">
             🐢 Devagar
           </button>
-          <button onclick="revealSyllables()" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 active:scale-95 text-amber-950 font-extrabold text-sm border border-amber-300 transition">
+          <button onclick="triggerSyllableDots()" class="py-3.5 px-2 rounded-2xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-white font-extrabold text-sm sm:text-base shadow-sm border-b-4 border-amber-700 transition">
             💡 Sílabas
           </button>
         </div>
 
-        <!-- Caixa de sílabas (aparece quando toca em Sílabas) -->
-        <div id="syllableHintBox" class="hidden w-full py-2.5 px-4 rounded-xl bg-white border-2 border-indigo-200 text-indigo-950 font-black text-xl sm:text-2xl dyslexia-text">
-          TO-MA-TE
+        <!-- Bolinhas indicando apenas a quantidade de sílabas -->
+        <div id="syllableDotsBox" class="hidden w-full py-3 px-4 rounded-xl bg-white border-2 border-indigo-200 flex flex-col items-center justify-center gap-1.5">
+          <div id="syllableDotsRow" class="flex items-center justify-center gap-2.5 flex-wrap"></div>
+          <span id="syllableCountLabel" class="text-xs font-bold text-indigo-800"></span>
         </div>
       </div>
 
-      <!-- 4 Opções de Escrita -->
+      <!-- 4 Opções de Palavras -->
       <div id="optionsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
 
-      <!-- Feedback positivo/gentil -->
-      <div id="feedbackBanner" class="min-h-[32px] flex items-center justify-center text-center font-black text-base sm:text-lg"></div>
+      <!-- Feedback -->
+      <div id="feedbackBanner" class="min-h-[30px] flex items-center justify-center text-center font-extrabold text-base"></div>
     </section>
 
-    <!-- TELA 3: CELEBRAÇÃO E RELATÓRIO WHATSAPP -->
+    <!-- TELA 3: FECHAMENTO DA RODADA E RELATÓRIO WHATSAPP -->
     <section id="screenSummary" class="card-surface rounded-3xl p-5 sm:p-6 hidden flex-col gap-4 animate-pop">
       <div class="text-center">
-        <div id="summaryEmoji" class="text-5xl mb-1">🎉</div>
-        <h2 id="summaryTitle" class="text-2xl font-black text-slate-800">Muito bem!</h2>
-        <p id="summarySubtitle" class="text-sm font-bold text-slate-600 mt-0.5">Você completou 10 palavras!</p>
+        <div id="summaryEmoji" class="text-5xl mb-1">🏆</div>
+        <h2 id="summaryTitle" class="text-2xl font-extrabold text-slate-800">Parabéns!</h2>
+        <p id="summarySubtitle" class="text-sm font-bold text-slate-600 mt-0.5">Rodada concluída!</p>
       </div>
 
-      <!-- Cartões de Resumo -->
       <div class="grid grid-cols-3 gap-2 text-center">
         <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-3">
-          <div id="sumFirstTry" class="text-lg sm:text-xl font-black text-emerald-800">9/10</div>
-          <div class="text-[11px] font-extrabold text-emerald-700">De primeira</div>
+          <div id="sumFirstTry" class="text-base sm:text-lg font-extrabold text-emerald-800">9/10</div>
+          <div class="text-[11px] font-bold text-emerald-700">De primeira</div>
         </div>
         <div class="rounded-2xl bg-sky-50 border border-sky-200 p-3">
-          <div id="sumAvgTime" class="text-lg sm:text-xl font-black text-sky-800">3s</div>
-          <div class="text-[11px] font-extrabold text-sky-700">Tempo médio</div>
+          <div id="sumAvgTime" class="text-base sm:text-lg font-extrabold text-sky-800">3s</div>
+          <div class="text-[11px] font-bold text-sky-700">Tempo médio</div>
         </div>
         <div class="rounded-2xl bg-amber-50 border border-amber-200 p-3">
-          <div id="sumTotalMem" class="text-lg sm:text-xl font-black text-amber-800">12 ⭐</div>
-          <div class="text-[11px] font-extrabold text-amber-700">Memorizadas</div>
+          <div id="sumTotalMem" class="text-base sm:text-lg font-extrabold text-amber-800">10 ⭐</div>
+          <div class="text-[11px] font-bold text-amber-700">Memorizadas</div>
         </div>
       </div>
 
-      <!-- Frase da Rodada -->
+      <!-- Frase Coerente ou Lista da Rodada -->
       <div class="rounded-2xl bg-[#FFF9EB] border-2 border-amber-300 p-4 text-center">
-        <div class="text-xs font-black uppercase text-amber-800 mb-1">🗣️ Frase da rodada</div>
-        <div id="sumSentence" class="dyslexia-text text-base sm:text-lg font-black text-slate-900">
-          A BOLA VIU O GATO.
+        <div id="closingBlockTitle" class="text-xs font-extrabold uppercase text-amber-800 mb-1.5">
+          🗣️ Frase da rodada
         </div>
-        <button onclick="speakBonusSentence()" class="mt-2 px-3.5 py-1.5 rounded-xl bg-amber-200/80 hover:bg-amber-200 text-amber-950 font-extrabold text-xs transition">
-          🔊 Ouvir frase
+        <div id="closingBlockText" class="dyslexia-text text-base sm:text-lg font-extrabold text-slate-900 leading-relaxed">
+          O MENINO COMEU A SALADA.
+        </div>
+        <button onclick="speakClosingText()" class="mt-2.5 px-4 py-2 rounded-xl bg-amber-200/80 hover:bg-amber-200 text-amber-950 font-extrabold text-xs transition">
+          🔊 Ouvir em voz alta
         </button>
       </div>
 
-      <!-- Relatório Pronto para WhatsApp -->
+      <!-- Relatório WhatsApp -->
       <div>
         <div class="flex items-center justify-between mb-1">
-          <span class="text-xs font-extrabold text-slate-500">Relatório para enviar ao papai:</span>
-          <span id="copyConfirm" class="text-xs font-black text-emerald-600 opacity-0 transition-opacity">✅ Copiado!</span>
+          <span class="text-xs font-bold text-slate-500">Relatório para o papai:</span>
+          <span id="copyConfirm" class="text-xs font-extrabold text-emerald-600 opacity-0 transition-opacity">✅ Copiado!</span>
         </div>
         <pre id="reportBox" class="w-full p-3.5 rounded-2xl bg-slate-100 border border-slate-200 text-xs font-mono text-slate-800 whitespace-pre-wrap max-h-40 overflow-y-auto"></pre>
       </div>
@@ -199,23 +206,23 @@
           📋 Copiar Relatório
         </button>
         <button onclick="shareWhatsApp()" class="py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm flex items-center justify-center gap-2 transition">
-          📲 Enviar no WhatsApp
+          📲 Enviar Relatório no WhatsApp
         </button>
       </div>
 
-      <button onclick="startRound()" class="w-full py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-white font-black text-xl shadow-md border-b-4 border-amber-700 transition">
+      <button onclick="startRound()" class="w-full py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-white font-extrabold text-xl shadow-md border-b-4 border-amber-700 transition">
         ▶️ JOGAR DE NOVO
       </button>
     </section>
 
   </div>
 
-  <!-- MODAL DISCRETO DO ÁLBUM DE PALAVRAS -->
+  <!-- MODAL DO ÁLBUM DE PALAVRAS -->
   <div id="albumModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center p-3 z-50" onclick="if(event.target===this) closeAlbum()">
     <div class="bg-[#FFFDF7] border-2 border-amber-200 rounded-3xl w-full max-w-lg max-h-[85vh] p-5 flex flex-col gap-3 shadow-2xl">
       <div class="flex items-center justify-between">
-        <h3 class="text-lg font-black text-slate-800">⭐ Minhas Palavras</h3>
-        <button onclick="closeAlbum()" class="px-3.5 py-1.5 rounded-xl bg-slate-200 text-slate-800 font-extrabold text-xs">Fechar ✕</button>
+        <h3 class="text-lg font-extrabold text-slate-800">⭐ Minhas Palavras</h3>
+        <button onclick="closeAlbum()" class="px-3.5 py-1.5 rounded-xl bg-slate-200 text-slate-800 font-bold text-xs">Fechar ✕</button>
       </div>
       <p id="albumStats" class="text-xs font-bold text-slate-600"></p>
       <div class="flex gap-1.5">
@@ -229,209 +236,253 @@
 
   <script>
     // =========================================================================
-    // 1. BANCO REAL E COMPLETO DE 1.000 PALAVRAS DISTINTAS (800 SIMPLES + 200 LEVES)
+    // 1. LISTA PROIBIDA: AS 33 PALAVRAS DO JOGO ANTERIOR (ZERO REPETIÇÃO)
     // =========================================================================
-    const SIMPLE_LIST = [
-      "aba","abacate","abacaxi","abafado","abanar","abano","abelha","aberta","aberto","abobora",
-      "abotoar","acabar","acalmar","acaso","aceitar","acenar","aceno","aceso","achar","acima",
-      "acordar","acude","adega","adeus","adiar","adubo","adulto","afago","afeto","afiar",
-      "afinar","afogar","agora","agudo","ajuda","ajudar","alada","alado","alagar","alamo",
-      "alface","aliado","alimento","alisar","alivio","almoco","alugar","aluno","amada","amado",
-      "amarelo","amassar","amiga","amigo","amizade","amor","amora","analise","anel","animal",
-      "animar","animo","anotar","antena","antiga","antigo","apagar","aparo","apego","apelo",
-      "apenas","aperto","apitar","apito","apoio","apurar","arado","arame","arara","areia",
-      "arena","aroma","arrumar","arte","asilo","assar","assinar","atacado","atacar","atalho",
-      "atento","aterro","ativo","atleta","atomo","atraso","atum","audaz","aula","autor",
-      "ave","aveia","avenida","aviao","avisar","aviso","avocado","azedo","azeite","azul",
-      "azulado","baba","babador","bacana","bacia","bagagem","baia","baiana","baiano","bailar",
-      "baile","baita","baixo","bala","balada","balao","baleia","baliza","banana","bananada",
-      "banca","banco","banda","bandeja","banho","barata","barato","barba","barbante","barco",
-      "barra","barriga","barro","base","bata","batata","bater","batida","batom","bau",
-      "bebado","bebe","bebida","beco","beijar","beijo","beira","beleza","belo","bem",
-      "bengala","berco","berinjela","bexiga","bica","bico","bife","bigode","bilhete","bingo",
-      "biscoito","boca","bocado","bode","boia","boiada","boi","bola","bolacha","bolada",
-      "boleto","boliche","bolo","bolota","bolsa","bolso","bom","bomba","boneca","boneco",
-      "bonita","bonito","borda","bota","botar","botao","bote","braco","bravo","brisa",
-      "broa","bule","buraco","buscar","buzina","cabana","cabelo","cabide","cabo","cabra",
-      "cacau","cacho","cada","cadeado","cadeira","cadela","caderno","cafe","cafeteira","caixa",
-      "caixote","caju","cajueiro","calada","calado","calca","caldo","calma","calmo","calor",
-      "cama","camada","camara","camelo","camisa","camiseta","campo","cana","canal","canario",
-      "caneca","canela","caneta","cano","canoa","canto","capa","capacete","capaz","capela",
-      "capim","capitao","capote","caqui","cara","caracol","carimbo","carinho","carne","caro",
-      "caroco","carona","carro","carta","casa","casaco","casal","casca","casco","casulo",
-      "catar","cauda","causa","cavalo","cebola","cedo","cela","celular","cena","cenoura",
-      "cento","cera","cerca","cereja","certo","cervo","cesta","cesto","ceu","cevada",
-      "cidadao","cidade","cima","cinema","cinto","cinza","circo","cisne","citar","clara",
-      "claro","clima","clube","coador","cobertor","cobra","cobrir","coco","cocada","coelho",
-      "cogumelo","coisa","cola","colar","colchao","colega","coleira","colher","colina","comecar",
-      "comer","cometa","comida","comum","cone","conta","contar","copo","cor","coracao",
-      "coragem","coral","corda","coroa","corpo","correr","corrida","cortar","corte","coruja",
-      "costa","costura","cotovelo","couve","cova","cozinha","creme","criar","crina","cru",
-      "cubo","cueca","cuidado","cuidar","culpa","cupido","curar","curso","curto","curva",
-      "dada","dado","dama","danca","dancar","danone","data","debaixo","dedal","dedo",
-      "defesa","degrau","deitado","deitar","deixar","delicado","demais","dente","depois","desenho",
-      "deserto","desejo","dever","devagar","dia","diamante","dieta","dinheiro","dinossauro","direito",
-      "disco","ditado","divida","doar","dobrar","dobro","doce","docura","doente","doido",
-      "domingo","domino","dona","dono","dormir","dose","dourado","duelo","duende","duna",
-      "dupla","duplo","duque","duro","duvida","eco","edificio","educado","egua","eixo",
-      "elegante","elefante","elenco","elevar","elogio","ema","embalo","empada","empate","encanto",
-      "energia","enfeite","engano","enorme","ensaio","entao","entrada","entrar","envelope","enxada",
-      "epoca","equipe","errado","erva","escada","escola","escova","escudo","escuro","espaco",
-      "espada","espelho","espera","esperto","espiga","espuma","esquina","estaca","estado","estante",
-      "estar","estatua","estilo","estojo","estrada","estudo","etapa","etiqueta","exame","exemplo",
-      "exibir","exito","fabrica","faca","fada","faixa","fala","falar","fama","familia",
-      "farinha","farofa","farol","fatiado","fato","favor","fazenda","fazer","febre","fechar",
-      "feira","feijao","feito","felicidade","feliz","femea","ferida","ferias","ferro","festa",
-      "fita","fivela","fixo","flor","foca","fofo","fogao","fogo","foguete","folga",
-      "folha","fome","fonte","fora","forca","forma","formiga","forno","forte","foto",
-      "fraco","frase","freio","frente","fresco","frio","frita","frito","fruta","fuba",
-      "fuga","fugir","fumaca","fundo","funil","furacao","furar","furo","futebol","futuro",
-      "gaita","gaiola","gaivota","galho","galo","ganhar","garagem","garfo","garota","garoto",
-      "garrafa","gastar","gata","gato","gaveta","geladeira","gelado","geleia","gelo","gema",
-      "gemeo","gengibre","genio","gente","geral","gerar","gigante","girafa","girar","girassol",
-      "giro","goleiro","golfe","golo","goma","gordo","gorila","gostar","gosto","gota",
-      "gozar","grade","grama","grande","grao","grato","gravata","greve","grilo","gripe",
-      "gritar","grito","grosso","grupo","gruta","guarda","guia","guiar","habil","harpa",
-      "heroi","hino","hoje","homem","hora","horta","hotel","humano","humor","idade",
-      "ideia","idoso","igreja","igual","ilha","imagem","ima","imitar","imovel","inicio",
-      "inseto","inteiro","inverno","irmao","irma","isca","isento","item","jabuti","jacare",
-      "janela","jangada","jantar","jaqueta","jardim","jarra","jarro","javali","jeito","jipe",
-      "joelho","jogador","jogar","jogo","joia","jornal","jovem","juiz","jujuba","julgar",
-      "jumento","juntar","junto","jurado","jurar","justo","labio","laco","lado","lago",
-      "lagoa","lama","lamina","lanche","lapis","laranja","laranjada","largo","lata","latido",
-      "lavar","lazer","leao","legume","lei","leite","leitura","lembrar","leme","lenco",
-      "lencol","lenda","lente","lento","leopardo","ler","letra","levar","leve","liberar",
-      "licao","lidar","ligar","limao","limpar","limpo","linda","lindo","linha","liquido",
-      "lista","litro","livro","lixo","lobo","local","logo","loja","lona","longe",
-      "longo","lousa","lua","luar","lucro","lugar","lupa","luta","lutar","luva",
-      "luz","maca","macaco","macarrao","macio","madeira","madrugada","mae","magia","magica",
-      "magico","magro","maio","maior","mala","maleta","mamae","mamao","mamadeira","mancha",
-      "mandar","manga","manha","mania","manta","manteiga","mapa","maquina","mar","maracuja",
-      "marca","marcar","mare","margarida","marido","mariposa","martelo","massa","matar","mato",
-      "medalha","medico","medida","medir","medo","meia","meio","mel","melancia","melao",
-      "menina","menino","menor","menos","mente","mentira","mercado","mesa","mesmo","metade",
-      "metal","meter","meu","mexer","mingau","minuto","miolo","mirar","missa","misto",
-      "moda","modelo","moeda","moer","mola","molde","mole","molho","morango","morar",
-      "morcego","morder","moreno","morro","morte","mosca","mostrar","motivo","moto","motor",
-      "mover","muda","mudar","muito","mula","multa","mundo","muro","museu","musica",
-      "nabo","nadar","nadador","namoro","nariz","nascer","natural","natureza","navio","nave",
-      "neblina","negar","negocio","neto","neve","noite","noiva","noivo","nome","norte",
-      "nota","notar","noticia","nova","novela","novelo","novo","nuvem","obra","oca",
-      "oculos","ocupado","odio","oeste","oficina","oleo","olhar","olho","onda","onca",
-      "ontem","opaco","opcao","operar","opiniao","orar","ordem","orelha","orgulho","origem",
-      "ouro","ousado","outono","outro","ouvir","ovelha","ovo","pacoca","pacote","padaria",
-      "padre","pagar","pagina","pai","painel","paisagem","palavra","palacio","palito","palma",
-      "palmeira","pano","pantera","papagaio","papai","papel","papelao","par","parada","parafuso",
-      "paraiso","parar","parede","parque","parte","partir","passado","passar","passeio","pasta",
-      "pastel","pata","patinete","pato","patins","pausa","pavao","paz","pe","peao",
-      "peca","pedaco","pedal","pedido","pedir","pedra","pegada","pegar","peixe","pele",
-      "pelo","pena","pente","pepino","pequeno","pera","perder","perigo","perna","perto",
-      "peru","pesado","pescaria","pescoco","peso","pessoa","peteca","piano","picada","picar",
-      "picole","pijama","pilha","piloto","pimenta","pimentao","pincel","pingo","pinguim","pino",
-      "pintar","pintura","pipa","pipoca","pirata","pires","pirulito","piscina","pista","placa",
-      "plano","planta","pobre","poca","poco","poder","poema","poeta","polegar","poltrona",
-      "polvo","pomada","pomar","pomba","pombo","ponta","ponte","ponto","porco","porta",
-      "portao","porto","posse","poste","pote","pouco","povo","praca","prado","praia",
-      "prata","prato","prazer","preco","prego","premio","presente","preso","preto","primavera",
-      "primo","princesa","principe","procurar","produto","prova","provar","pudim","pular","pulseira",
-      "pulo","puma","puro","puxar","quadra","quadrado","quadro","quarto","quase","queda",
-      "queijo","queixo","quente","querer","quiabo","quilo","quintal","rabanete","rabo","raio",
-      "raiz","ralador","ralo","ramo","rapadura","rapaz","rapido","raposa","rasgar","rato",
-      "razao","recado","receita","rede","regador","regar","regra","rei","reino","relogio",
-      "remedio","remo","renda","repolho","repouso","resumo","reto","retrato","revista","riacho",
-      "rico","rio","risada","risco","ritmo","roda","rodar","rodo","rolo","roma",
-      "rosa","rosto","rota","roupa","rua","ruido","rumo","sabao","saber","sabia",
-      "sabor","sacola","saida","sair","saia","sal","salada","salario","saleiro","salgado",
-      "salao","saltar","salto","salvar","sapato","sapo","saudade","saude","secar","seco",
-      "seda","sede","segredo","seguir","seguro","selo","semana","semente","senhora","sentar",
-      "sentido","sereia","sereno","serie","serio","serra","serrote","servir","seta","setor",
-      "sinal","sino","siri","sitio","sobra","sobrar","sofa","sol","soldado","solo",
-      "soltar","solto","sombra","somar","sono","sopa","soprar","sorriso","sorte","sorvete",
-      "suave","subir","suco","sujo","sumir","suor","surpresa","tabela","tabuada","taca",
-      "talher","tamandua","tambor","tampa","tangerina","tapete","tarde","tarefa","tartaruga","tatu",
-      "teatro","tecido","teclado","tela","telefone","telha","telhado","tema","tempestade","tempo",
-      "tenis","ter","terra","tesoura","testa","teto","tigela","tigre","tijolo","tinta",
-      "tio","tia","tirar","titulo","toalha","toca","tocar","toco","todo","tomate",
-      "torneira","torre","torta","touca","trazer","treinar","treino","trem","trevo","trigo",
-      "trilha","troca","trocar","tronco","tubarao","tucano","tudo","tulipa","tunel","turma",
-      "ultimo","umbigo","unico","unido","universo","urso","urubu","usar","uso","uva",
-      "vaca","vaga","vagalume","vago","vale","valer","valor","varanda","vareta","varios",
-      "vaso","vassoura","vela","velho","veloz","veludo","vencer","venda","vender","vento",
-      "ver","verao","verdade","verde","vermelho","verso","vestido","vez","viagem","viajar",
-      "vida","vidro","vila","violao","violino","vir","virar","visita","visitar","vista",
-      "vitamina","vitoria","viver","vivo","vizinho","voar","voce","volante","volta","voltar",
-      "vovo","voz","xadrez","xale","xarope","xicara","xixi","zangado","zebra","zero",
-      "ziper","zona","zoologico","abajur","acorde","alicate","almofada","alvorada","amendoa","amostra",
-      "ancora","andar","aparelho","aplauso","aquario","arquivo","artesanato","aspirador","atacante","atividade",
-      "aumento","avental","azeitona","bailarina","balanca","bambu","bandeira","banquete","barbearia","barraca",
-      "bateria","bebedouro","biblioteca","bilheteria","biquini","bisavo","bombeiro","bordado","borracheiro","bracelete",
-      "brasileiro","broto","bufalo","bussola","cabrito","cacador","cacto","cadarco","cafune","calcada",
-      "calendario","camaleao","camarao","camisola","campeao","canavial","candeeiro","canguru","cantiga","cantor",
-      "capivara","caravana","cardume","carroca","carteira","carteiro","cascata","castelo","cavalete","cemiterio",
-      "centopeia","ceramica","chafariz","chamine","chinelinho","ciclista","cigarro","cintura","claridade","cobertorzinho"
-    ];
+    const FORBIDDEN_33 = new Set([
+      "camelo","cavalo","gato","lobo","macaco","pato","rato","sapo","vaca",
+      "bala","banana","bolo","gelo","pera","pipoca","pirulito","tomate","uva",
+      "bola","bota","camisa","casa","dado","fogo","luva","mala","moto",
+      "nave","sapato","sino","vela","fada","lua"
+    ]);
 
-    const CHALLENGE_LIST = [
-      "abelhinha","abraco","acougue","acucar","agulha","alegria","algodao","alianca","alho","amanha",
-      "amendoim","andorinha","anjo","anzol","aranha","arranhar","arroz","arvore","assobio","assustar",
-      "bagunca","banheiro","barulho","batalha","baunilha","bicho","bicicleta","blusa","bolha","borboleta",
-      "borracha","brilho","brinquedo","brocolis","bruxa","cabeleireiro","cachorro","caixinha","calcao","caminhao",
-      "caminho","campainha","cancao","caranguejo","carinha","carrinho","cartilha","castanha","cegonha","chacara",
-      "chaleira","chama","chamar","champanhe","chao","chapeu","charada","charme","chave","chaveiro",
-      "chegada","chegar","cheia","cheio","cheiro","chinelo","chocalho","chocolate","choque","chorar",
-      "choro","chover","chuva","chuveiro","cigarra","coelhinho","colcha","colheita","companhia","concha",
-      "cozinheiro","crianca","cruz","desenhar","dragao","empilhar","encher","enxame","ervilha","escolha",
-      "esconder","espantalho","espinho","estrela","fechadura","filhote","flauta","flecha","florista","fogueira",
-      "folhagem","fornalha","framboesa","gafanhoto","galinha","galinheiro","gancho","garrafinha","gatinho","guerra",
-      "guitarra","helicoptero","hipopotamo","historia","joaninha","lagartixa","lanchonete","lanterna","lenha","limonada",
-      "lingua","machado","maravilha","mergulho","minhoca","mochila","molhado","montanha","ninho","palhaco",
-      "passarinho","passaro","peixinho","piolho","pinheiro","porquinho","prateleira","preguica","quadrinho","queimar",
-      "querido","rainha","rascunho","rebanho","redemoinho","rocha","salsicha","sanduiche","sardinha","senhor",
-      "sobrancelha","sonhar","sonho","sossego","sorveteria","trabalho","travesseiro","triangulo","unha","velhinho",
-      "ventilador","violoncelo","zangao","zumbido","abracar","achocolatado","agulheiro","almanaque","almofadinha","amarelinha",
-      "aniversario","apontador","aquecedor","aracnideo","armadilha","arranha-ceu","arrepio","artilharia","assadeira","astronauta",
-      "atrapalhar","aventurar","azulejo","bagageiro","balancinho","bambolê","bandeirinha","banheirinha","barbear","barrigudo",
-      "batatinha","beijinho","bercario","bichinho","bilhetinho","biscoitinho","blusinha","bolinha","bonequinha","borrachinha"
-    ];
-
-    const ACCENTS = {
-      abobora:"abóbora", acude:"açude", alamo:"álamo", alivio:"alívio", almoco:"almoço", analise:"análise",
-      animo:"ânimo", atomo:"átomo", aviao:"avião", balao:"balão", bau:"baú", bebado:"bebado",
-      bebe:"bebê", berco:"berço", botao:"botão", braco:"braço", cafe:"café", calca:"calça",
-      camara:"câmara", canario:"canário", capitao:"capitão", caroco:"caroço", ceu:"céu", cidadao:"cidadão",
-      colchao:"colchão", comecar:"começar", coracao:"coração", danca:"dança", dancar:"dançar", divida:"dívida",
-      docura:"doçura", domino:"dominó", duvida:"dúvida", edificio:"edifício", egua:"égua", epoca:"época",
-      espaco:"espaço", estatua:"estátua", exito:"êxito", fabrica:"fábrica", familia:"família", feijao:"feijão",
-      femea:"fêmea", ferias:"férias", fogao:"fogão", forca:"força", fuba:"fubá", fumaca:"fumaça",
-      furacao:"furacão", gemeo:"gêmeo", genio:"gênio", grao:"grão", habil:"hábil", heroi:"herói",
-      ima:"imã", imovel:"imóvel", inicio:"início", irmao:"irmão", irma:"irmã", jacare:"jacaré",
-      labio:"lábio", laco:"laço", lamina:"lâmina", lapis:"lápis", leao:"leão", lenco:"lenço",
-      lencol:"lençol", licao:"lição", limao:"limão", liquido:"líquido", maca:"maçã", macarrao:"macarrão",
-      mae:"mãe", magica:"mágica", magico:"mágico", mamae:"mamãe", mamao:"mamão", manha:"manhã",
-      maquina:"máquina", maracuja:"maracujá", mare:"maré", medico:"médico", melao:"melão", musica:"música",
-      negocio:"negócio", noticia:"notícia", oculos:"óculos", odio:"ódio", oleo:"óleo", onca:"onça",
-      opcao:"opção", opiniao:"opinião", pacoca:"paçoca", pagina:"página", palacio:"palácio", papelao:"papelão",
-      paraiso:"paraíso", pavao:"pavão", pe:"pé", peao:"peão", peca:"peça", pedaco:"pedaço",
-      pescoco:"pescoço", picole:"picolé", pimentao:"pimentão", poca:"poça", poco:"poço", portao:"portão",
-      praca:"praça", preco:"preço", premio:"prêmio", rapido:"rápido", razao:"razão", relogio:"relógio",
-      remedio:"remédio", roma:"romã", ruido:"ruído", sabao:"sabão", sabia:"sabiá", saida:"saída",
-      salario:"salário", salao:"salão", saude:"saúde", serie:"série", serio:"sério", sitio:"sítio",
-      sofa:"sofá", taca:"taça", tamandua:"tamanduá", tenis:"tênis", titulo:"título", tubarao:"tubarão",
-      tunel:"túnel", ultimo:"último", unico:"único", varios:"vários", verao:"verão", violao:"violão",
-      vitoria:"vitória", voce:"você", vovo:"vovó", xicara:"xícara", ziper:"zíper", zoologico:"zoológico",
-      amendoa:"amêndoa", ancora:"âncora", aquario:"aquário", balanca:"balança", bisavo:"bisavô", bufalo:"búfalo",
-      bussola:"bússola", cacador:"caçador", cadarco:"cadarço", cafune:"cafuné", calcada:"calçada", calendario:"calendário",
-      camaleao:"camaleão", camarao:"camarão", campeao:"campeão", carroca:"carroça", cemiterio:"cemitério", centopeia:"centopeia",
-      ceramica:"cerâmica", chamine:"chaminé", abraco:"abraço", acougue:"açougue", acucar:"açúcar", algodao:"algodão",
-      alianca:"aliança", amanha:"amanhã", bagunca:"bagunça", brocolis:"brócolis", calcao:"calção", caminhao:"caminhão",
-      cancao:"canção", chacara:"chácara", chao:"chão", chapeu:"chapéu", crianca:"criança", dragao:"dragão",
-      helicoptero:"helicóptero", hipopotamo:"hipopótamo", historia:"história", lingua:"língua", palhaco:"palhaço",
-      passaro:"pássaro", preguica:"preguiça", sanduiche:"sanduíche", triangulo:"triângulo", zangao:"zangão",
-      abracar:"abraçar", aniversario:"aniversário", aracnideo:"aracnídeo", bercario:"berçário"
+    // =========================================================================
+    // 2. BANCO DE 1.000 PALAVRAS INÉDITAS E ETIQUETADAS (800 SIMPLES + 200 LEVES)
+    // =========================================================================
+    // Categorias: 'ser' (pessoas/animais/personagens), 'comida', 'objeto', 'lugar', 'natureza'
+    // Gênero: 'm' (masculino) ou 'f' (feminino)
+    const RAW_SIMPLE_BY_CAT = {
+      ser: {
+        m: [
+          "menino","garoto","amigo","colega","aluno","piloto","pirata","medico","poeta","juiz",
+          "heroi","duende","genio","rei","principe","marido","neto","irmao","pai","papai",
+          "tio","idoso","jovem","bebe","rapaz","adulto","vizinho","goleiro","jogador","nadador",
+          "cantor","ator","autor","doutor","diretor","pintor","tutor","zelador","morador","viajante",
+          "tucano","jacare","leao","tigre","urso","urubu","peru","galo","pavao","canario",
+          "jabuti","javali","gorila","puma","cervo","bode","boi","jumento","porco","polvo",
+          "siri","tubarao","pelicano","canguru","morcego","besouro","grilo","cupim","bicho","animal",
+          "campeao","capitao","soldado","xerife","barao","duque","conde","mago","sabio","lider",
+          "pedreiro","padeiro","copeiro","caseiro","porteiro","ferreiro","barbeiro","vaqueiro","boleiro","romeiro",
+          "moleque","curumim","caipira","artista","dentista","pianista","skatista","ciclista","turista","surfista",
+          "fregues","cliente","parente","parceiro","guia","chefe","mestre","socio","rival","farao",
+          "gigante","anao","robô","boneco","palhaco","marujo","pescador","cacador","domador","amador",
+          "corredor","vencedor","sonhador","leitor","escritor","inventor","inspetor","professor","assessor","sucessor",
+          "equino","felino","canino","bovino","suino","ovino","caprino","colibri","bem-te-vi","sabia",
+          "quati","tamandua","tatu","cutia","prea","sagui","mico","bugio","sauim","peixe-boi"
+        ],
+        f: [
+          "menina","garota","amiga","colega","aluna","sereia","rainha","princesa","noiva","mamae",
+          "mae","irma","tia","neta","dona","senhora","mulher","moca","crianca","visita",
+          "coruja","girafa","zebra","arara","gaivota","pomba","aguia","ema","iguana","cobra",
+          "foca","baleia","medusa","lagarta","formiga","mosca","barata","mariposa","cigarra","pulga",
+          "raposa","pantera","onca","leoa","tigresa","ursa","cabra","mula","egua","porca",
+          "cadela","gata","pata","rata","sapa","macaca","camela","loba","femea","bailarina",
+          "cantora","pintora","doutora","diretora","autora","juiza","heroina","fada-madrinha","bruxinha","boneca",
+          "vizinha","prima","sobrinha","madrinha","comadre","parteira","copeira","padeiras","caseira","porteira",
+          "modista","florista","fadista","samurai","amazona","guerreira","arqueira","viajante","ajudante","estudante",
+          "camponesa","baronesa","duquesa","condessa","imperatriz","aprendiz","atriz","nutriz","juventude","turma",
+          "familia","equipe","plateia","multidao","galera","dupla","tropa","banda","gente","pessoa",
+          "capivara","jiboia","sucuri","jararaca","cascavel","tarantula","libelula","centopeia","lacraia","lesma",
+          "ostra","lula","arraia","sardinha","tilapia","piranha","traira","garoupa","moreia","enguia"
+        ]
+      },
+      comida: {
+        m: [
+          "abacate","abacaxi","caju","mamao","melao","limao","caqui","figo","coco","morango",
+          "pepino","quiabo","nabo","repolho","alho","milho","arroz","feijao","trigo","aveia",
+          "queijo","leite","danone","mingau","pudim","sorvete","picole","acucar","mel","sal",
+          "bife","ovo","peixe","atum","camarao","pastel","pao","biscoito","macarrao","molho",
+          "caldo","suco","cafe","cha","refresco","vinagre","azeite","oleo","creme","pure",
+          "caramelo","torrone","suspiro","beijinho","cajuzinho","quindim","manjar","curau","mungunza","cuscuz",
+          "tapioca","bijou","sequilho","bolinho","salgado","risole","kibe","esfirra","hot-dog","sanduiche",
+          "temperos","oregano","cominho","louro","cravo","gengibre","urucum","acafrao","cacau","guarana",
+          "maracuja","cupuacu","pitanga","acerola","graviola","tamarindo","jenipapo","pequi","buriti","baru",
+          "inhame","cara","mandioca","aipim","batata-doce","rabanete","maxixe","jilo","chuchu","brocolis"
+        ],
+        f: [
+          "salada","comida","fruta","laranja","melancia","manga","goiaba","ameixa","cereja","amora",
+          "pitaya","carambola","jabuticaba","tangerina","mexerica","lima","cidra","jambo","jaca","pinha",
+          "cenoura","cebola","batata","abobora","beterraba","berinjela","ervilha","vagem","couve","alface",
+          "rucula","espinafre","salsa","cebolinha","pimenta","canela","baunilha","farinha","farofa","massa",
+          "torta","bolacha","cocada","rapadura","pacoca","jujuba","gelatina","geleia","manteiga","ricota",
+          "sopa","canja","vitamina","laranjada","limonada","bebida","merenda","janta","ceia","dieta",
+          "empada","coxinha","pamonha","canjica","polenta","lasanha","panqueca","omelete","fritada","moqueca",
+          "feijoada","dobradinha","rabada","caldeirada","peixada","mariscada","salmoura","conserva","compota","calda",
+          "raposinha","maria-mole","ambrosia","queijadinha","broa","rosca","torrada","fatia","mordida","guloseima"
+        ]
+      },
+      objeto: {
+        m: [
+          "livro","caderno","lapis","estojo","papel","mapa","jornal","bilhete","recado","selo",
+          "copo","prato","garfo","pote","bule","ralo","funil","balde","saco","pacote",
+          "carro","aviao","navio","barco","trem","onibus","jipe","foguete","patinete","skate",
+          "piano","violao","violino","tambor","apito","radio","celular","teclado","computador","tablet",
+          "relogio","oculos","anel","colar","bracelete","laco","botao","ziper","bolso","cinto",
+          "sapato","tenis","chinelo","bone","chapeu","casaco","vestido","pijama","avental","lenco",
+          "sofa","tapete","quadro","espelho","vaso","abajur","cabide","berco","colchao","lencol",
+          "martelo","prego","parafuso","alicate","serrote","pincel","balao","peao","domino","xadrez",
+          "cubo","disco","tubo","cano","fio","cabo","arco","aro","furo","no",
+          "tesouro","premio","trofeu","medalhao","escudo","capacete","remo","leme","ancora","farol",
+          "carimbo","envelope","arquivo","cartao","cracha","folheto","livreto","gibi","album","poster",
+          "cesto","caixote","bau","cofre","cadeado","trinco","ferrolho","batedor","coador","espremedor",
+          "saleiro","acucareiro","paliteiro","cinzeiro","tinteiro","mosquiteiro","travesseiro","cobertor","edredom","tapetinho"
+        ],
+        f: [
+          "janela","porta","mesa","cadeira","cama","estante","gaveta","escada","parede","telha",
+          "caneta","borracha","regua","lousa","pasta","folha","carta","revista","pagina","etiqueta",
+          "panela","tigela","xicara","caneca","jarra","garrafa","tampa","faca","colher","bandeja",
+          "bacia","vassoura","escova","toalha","esponja","saboneteira","torneira","mangueira","pia","banheira",
+          "peteca","pipa","corda","rede","mola","roda","placa","seta","faixa","fita",
+          "roupa","saia","blusa","calca","meia","touca","capa","bolsa","maleta","sacola",
+          "caixa","cesta","lata","gaiola","isca","vara","redea","sela","ferradura","buzina",
+          "gaita","harpa","corneta","flauta","bateria","vitrola","antena","pilha","lampada","lanterna",
+          "joia","coroa","moeda","nota","ficha","carta","peca","tela","foto","imagem",
+          "moldura","cortina","persiana","almofada","colcha","fronha","manta","esteira","rede","barraca",
+          "bicicleta","canoa","jangada","carroca","carruagem","ambulancia","viatura","locomotiva","turbina","helice",
+          "bussola","luneta","lupa","balanca","seringa","mascara","luva-fina","viseira","fivela","pulseira"
+        ]
+      },
+      lugar: {
+        m: [
+          "parque","jardim","quintal","campo","sitio","pomar","bosque","mato","deserto","vale",
+          "morro","monte","pico","cume","abismo","buraco","tunel","poco","acude","lago",
+          "rio","riacho","mar","oceano","porto","cais","farol","canal","dique","aterro",
+          "quarto","banheiro","salao","corredor","porao","sotao","telhado","muro","portao","beco",
+          "mercado","banco","correio","museu","teatro","cinema","circo","clube","hotel","asilo",
+          "castelo","palacio","reino","imperio","pais","estado","municipio","bairro","centro","setor",
+          "estadio","ginasio","campo","patio","recreio","abrigo","refugio","acampamento","zoologico","aquario",
+          "aeroporto","viaduto","trevo","atalho","caminho","roteiro","destino","paraiso","universo","planeta"
+        ],
+        f: [
+          "escola","igreja","padaria","farmacia","oficina","fabrica","loja","feira","praca","rua",
+          "avenida","estrada","rodovia","ponte","esquina","calcada","parada","estacao","garagem","varanda",
+          "cozinha","sala","copa","despensa","lavanderia","cabana","toca","gruta","caverna","oca",
+          "fazenda","horta","lavoura","roca","mata","floresta","selva","savana","praia","ilha",
+          "lagoa","baia","enseada","costa","margem","beira","duna","colina","serra","montanha",
+          "cidade","vila","aldeia","capital","regiao","zona","area","quadra","pista","arena",
+          "piscina","academia","biblioteca","secretaria","portaria","bilheteria","galeria","sorveteria","cafeteria","pizzaria"
+        ]
+      },
+      natureza: {
+        m: [
+          "sol","ceu","ar","vento","raio","trovao","relampago","arco-iris","orvalho","sereno",
+          "calor","frio","clima","tempo","verao","inverno","outono","dia","amanhecer","entardecer",
+          "luar","eclipse","cometa","meteoro","asteroide","satelite","cosmo","espaco","horizonte","norte",
+          "sul","leste","oeste","solo","barro","cascalho","pedregulho","ouro","prata","ferro",
+          "cobre","cristal","diamante","rubi","jaspe","ambar","coral","musgo","cacto","bambu",
+          "galho","tronco","caule","broto","fruto","grao","polen","nectar","mel","aroma"
+        ],
+        f: [
+          "nuvem","chuva","neve","geada","neblina","brisa","ventania","tempestade","onda","mare",
+          "agua","espuma","gota","poca","fonte","nascente","cascata","cachoeira","correnteza","areia",
+          "terra","lama","poeira","pedra","rocha","pepita","perola","concha","estrela","constelacao",
+          "galaxia","orbita","aurora","madrugada","manha","tarde","noite","estacao","primavera","natureza",
+          "flor","folha","raiz","semente","planta","erva","grama","relva","sombra","luz",
+          "faisca","brasa","cinza","fumaca","chama","labareda","energia","vida","saude","beleza"
+        ]
+      }
     };
 
+    // 200 Palavras de Desafio Leve (dígrafos nh, lh, ch, rr, ss, qu, gu)
+    const RAW_CHALLENGE_BY_CAT = {
+      ser: {
+        m: [
+          "coelho","cachorro","passarinho","passaro","gatinho","porquinho","peixinho","bichinho","filhote","velhinho",
+          "senhor","palhaco","cozinheiro","cabeleireiro","marinheiro","engenheiro","guerreiro","arqueiro","ferreiro","caranguejo",
+          "gafanhoto","zangao","piolho","pato-selvagem","golfinho","hipopotamo","rinoceronte","camaleao","esquilo","ouriço",
+          "guaxinim","chimpanze","orangotango","pinguim","flamingo","rouxinol","pintassilgo","beija-flor","joao-de-barro","quero-quero",
+          "sobrinho","afilhado","padrinho","companheiro","trabalhador","mensageiro","conselheiro","artilheiro","patrulheiro","aventureiro"
+        ],
+        f: [
+          "galinha","abelha","ovelha","minhoca","joaninha","andorinha","cegonha","aranha","lagartixa","tartaruga",
+          "abelhinha","carinha","rainha","madrinha","sobrinha","vizinha","cozinheira","feiticeira","arqueira","guerreira",
+          "borboleta","chinchila","lhama","alpaca","gazela","hiena","guepardo","doninha","fuinha","toupeira",
+          "sardinha","anchova","cavalinha","pescadinha","garoupa","linguado","bacalhau","salamandra","perereca","ra-touro"
+        ]
+      },
+      comida: {
+        m: [
+          "chocolate","achocolatado","churrasco","churros","champignon","nhoque","pinhao","requeijao","brioche","croissant",
+          "biscoitinho","bolinho","salgadinho","docinho","paozinho","peixinho","franguinho","arroz-doce","molho-branco","caldinho"
+        ],
+        f: [
+          "castanha","pamonha","lasanha","salsicha","ervilha","framboesa","ameixa","bolacha","rosquinha","tortinha",
+          "batatinha","cenourinha","cebolinha","salsinha","alfacinha","ervilhinha","pimentinha","laranjinha","bananinha","macazinha"
+        ]
+      },
+      objeto: {
+        m: [
+          "chinelo","chapeu","chaveiro","chocalho","chuveiro","carrinho","caminhao","brinquedo","quadrinho","bilhetinho",
+          "travesseiro","espelho","ferrolho","gancho","machado","anzol","agulheiro","apontador","aquecedor","ventilador",
+          "helicóptero","foguete","submarino","barquinho","aviozinho","trenzinho","ursinho","bonequinho","livrinho","caderninho"
+        ],
+        f: [
+          "mochila","chave","chaleira","chamine","fechadura","agulha","toalha","colcha","prateleira","almofadinha",
+          "caixinha","garrafinha","bolinha","bonequinha","borrachinha","canetinha","bandeirinha","blusinha","calcinha","meiazinha"
+        ]
+      },
+      lugar: {
+        m: [
+          "banheiro","galinheiro","ninho","caminho","atalho","esconderijo","acampamento","parquinho","campinho","riachinho",
+          "castelinho","quartinho","quintalzinho","jardim","bosque","moinho","engenho","acougue","armazem","barracão"
+        ],
+        f: [
+          "chacara","montanha","ilha","cozinha","banheira","casinha","escolinha","igrejinha","pracinha","ruazinha",
+          "lojinha","feirinha","pontezinha","estrada","trilha","clareira","ribeira","fronteira","cocheira","estrebaria"
+        ]
+      },
+      natureza: {
+        m: [
+          "brilho","orvalho","redemoinho","zumbido","assobio","barulho","espinho","pinheiro","carvalho","ramalhete",
+          "solzinho","ventinho","riacho","chuvisco","relampago","trovao","arco-iris","pedregulho","cascalho","galhinho"
+        ],
+        f: [
+          "chuva","chama","folhagem","fogueira","lenha","rocha","concha","estrela","nuvem","brisa",
+          "florzinha","folhinha","pedrinha","gotinha","ondinha","estrelinha","luazinha","terrinha","areia","neblina"
+        ]
+      }
+    };
+
+    // Dicionário de acentuação correta em PT-BR
+    const ACCENTS = {
+      abobora:"abóbora", acude:"açude", alamo:"álamo", alivio:"alívio", almoco:"almoço",
+      animo:"ânimo", aviao:"avião", balao:"balão", bau:"baú", bebe:"bebê",
+      berco:"berço", botao:"botão", braco:"braço", cafe:"café", calca:"calça",
+      canario:"canário", capitao:"capitão", caroco:"caroço", ceu:"céu", colchao:"colchão",
+      coracao:"coração", danca:"dança", domino:"dominó", egua:"égua", espaco:"espaço",
+      fabrica:"fábrica", familia:"família", feijao:"feijão", femea:"fêmea", ferias:"férias",
+      fogao:"fogão", forca:"força", fumaca:"fumaça", furacao:"furacão", genio:"gênio",
+      grao:"grão", heroi:"herói", imovel:"imóvel", inicio:"início", irmao:"irmão",
+      irma:"irmã", jacare:"jacaré", labio:"lábio", laco:"laço", lamina:"lâmina",
+      lapis:"lápis", leao:"leão", lenco:"lenço", lencol:"lençol", limao:"limão",
+      maca:"maçã", macarrao:"macarrão", mae:"mãe", magico:"mágico", mamae:"mamãe",
+      mamao:"mamão", manha:"manhã", maquina:"máquina", maracuja:"maracujá", mare:"maré",
+      medico:"médico", melao:"melão", musica:"música", oculos:"óculos", oleo:"óleo",
+      onca:"onça", pacoca:"paçoca", pagina:"página", palacio:"palácio", papelao:"papelão",
+      paraiso:"paraíso", pavao:"pavão", pe:"pé", peao:"peão", peca:"peça",
+      pescoco:"pescoço", picole:"picolé", pimentao:"pimentão", poca:"poça", poco:"poço",
+      portao:"portão", praca:"praça", premio:"prêmio", relogio:"relógio", remedio:"remédio",
+      roma:"romã", sabao:"sabão", sabia:"sabiá", salao:"salão", saude:"saúde",
+      sitio:"sítio", sofa:"sofá", taca:"taça", tamandua:"tamanduá", tenis:"tênis",
+      tubarao:"tubarão", tunel:"túnel", verao:"verão", violao:"violão", vovo:"vovó",
+      xicara:"xícara", ziper:"zíper", zoologico:"zoológico", ancora:"âncora", aquario:"aquário",
+      balanca:"balança", bussola:"bússola", cacador:"caçador", calcada:"calçada", camaleao:"camaleão",
+      camarao:"camarão", campeao:"campeão", carroca:"carroça", centopeia:"centopeia", chamine:"chaminé",
+      acougue:"açougue", acucar:"açúcar", algodao:"algodão", alianca:"aliança", amanha:"amanhã",
+      brocolis:"brócolis", caminhao:"caminhão", cancao:"canção", chacara:"chácara", chao:"chão",
+      chapeu:"chapéu", crianca:"criança", dragao:"dragão", hipopotamo:"hipopótamo", palhaco:"palhaço",
+      passaro:"pássaro", sanduiche:"sanduíche", zangao:"zangão", anao:"anão", farao:"faraó",
+      fregues:"freguês", sabio:"sábio", lider:"líder", socio:"sócio", bone:"boné",
+      onibus:"ônibus", trofeu:"troféu", medalhao:"medalhão", relampago:"relâmpago", trovao:"trovão",
+      asteroide:"asteroide", satelite:"satélite", ambar:"âmbar", polen:"pólen", nectar:"néctar",
+      faisca:"faísca", aguia:"águia", jiboia:"jiboia", libélula:"libélula", libélulas:"libélulas",
+      perola:"pérola", constelacao:"constelação", galaxia:"galáxia", orbita:"órbita",
+      pinhao:"pinhão", requeijao:"requeijão", barrao:"barracão", armazem:"armazém",
+      chimpanze:"chimpanzé", ourico:"ouriço", guaxinim:"guaxinim"
+    };
+
+    // Divisor silábico fonético do Português (usado apenas para contar sílabas e pulsar bolinhas/voz)
     function splitSyllables(word) {
-      if (word.includes("-")) return word.split("-").map(splitSyllables).join("-");
+      if (word.includes("-")) return word.split("-").flatMap(splitSyllables);
       const vowels = "aeiouáàâãéêíóôõúü";
       const isVowel = (c) => vowels.includes(c.toLowerCase());
       const clusters = ["bl","br","cl","cr","dr","fl","fr","gl","gr","pl","pr","tl","tr","vr","ch","lh","nh","qu","gu"];
@@ -491,39 +542,296 @@
         }
       }
       if (cur && out[out.length - 1] !== cur) out.push(cur);
-      return out.join("-");
+      return out.length > 0 ? out : [word];
     }
 
-    // Constrói exatamente 1.000 palavras únicas (800 Simples + 200 Desafios Leves)
+    // Vocabulário extra de apoio simples para completar exatamente 800 palavras simples inéditas
+    const EXTRA_SIMPLE_WORDS = [
+      { w:"abano", cat:"objeto", gen:"m" }, { w:"abelha-mestra", cat:"ser", gen:"f" },
+      { w:"aceno", cat:"objeto", gen:"m" }, { w:"adega", cat:"lugar", gen:"f" },
+      { w:"adubo", cat:"natureza", gen:"m" }, { w:"afeto", cat:"natureza", gen:"m" },
+      { w:"agora", cat:"natureza", gen:"m" }, { w:"ajuda", cat:"natureza", gen:"f" },
+      { w:"alamo", cat:"natureza", gen:"m" }, { w:"aliado", cat:"ser", gen:"m" },
+      { w:"alimento", cat:"comida", gen:"m" }, { w:"alivio", cat:"natureza", gen:"m" },
+      { w:"almoco", cat:"comida", gen:"m" }, { w:"alvorada", cat:"natureza", gen:"f" },
+      { w:"amarelo", cat:"natureza", gen:"m" }, { w:"amizade", cat:"natureza", gen:"f" },
+      { w:"amor", cat:"natureza", gen:"m" }, { w:"amostra", cat:"objeto", gen:"f" },
+      { w:"analise", cat:"objeto", gen:"f" }, { w:"animo", cat:"natureza", gen:"m" },
+      { w:"aparo", cat:"objeto", gen:"m" }, { w:"apego", cat:"natureza", gen:"m" },
+      { w:"apelo", cat:"objeto", gen:"m" }, { w:"aperto", cat:"objeto", gen:"m" },
+      { w:"aplauso", cat:"natureza", gen:"m" }, { w:"apoio", cat:"objeto", gen:"m" },
+      { w:"arado", cat:"objeto", gen:"m" }, { w:"arame", cat:"objeto", gen:"m" },
+      { w:"arte", cat:"objeto", gen:"f" }, { w:"atacado", cat:"lugar", gen:"m" },
+      { w:"atleta", cat:"ser", gen:"m" }, { w:"atomo", cat:"natureza", gen:"m" },
+      { w:"atraso", cat:"natureza", gen:"m" }, { w:"aula", cat:"lugar", gen:"f" },
+      { w:"aviso", cat:"objeto", gen:"m" }, { w:"azul", cat:"natureza", gen:"m" },
+      { w:"babador", cat:"objeto", gen:"m" }, { w:"bagagem", cat:"objeto", gen:"f" },
+      { w:"baile", cat:"lugar", gen:"m" }, { w:"balada", cat:"lugar", gen:"f" },
+      { w:"baliza", cat:"objeto", gen:"f" }, { w:"bananada", cat:"comida", gen:"f" },
+      { w:"banca", cat:"lugar", gen:"f" }, { w:"banho", cat:"natureza", gen:"m" },
+      { w:"barba", cat:"natureza", gen:"f" }, { w:"barbante", cat:"objeto", gen:"m" },
+      { w:"barra", cat:"objeto", gen:"f" }, { w:"barriga", cat:"natureza", gen:"f" },
+      { w:"base", cat:"lugar", gen:"f" }, { w:"bata", cat:"objeto", gen:"f" },
+      { w:"batida", cat:"comida", gen:"f" }, { w:"batom", cat:"objeto", gen:"m" },
+      { w:"bebida-gelada", cat:"comida", gen:"f" }, { w:"beijo", cat:"natureza", gen:"m" },
+      { w:"bengala", cat:"objeto", gen:"f" }, { w:"bexiga", cat:"objeto", gen:"f" },
+      { w:"bica", cat:"objeto", gen:"f" }, { w:"bico", cat:"natureza", gen:"m" },
+      { w:"bigode", cat:"natureza", gen:"m" }, { w:"bingo", cat:"objeto", gen:"m" },
+      { w:"boca", cat:"natureza", gen:"f" }, { w:"bocado", cat:"comida", gen:"m" },
+      { w:"boia", cat:"objeto", gen:"f" }, { w:"boiada", cat:"natureza", gen:"f" },
+      { w:"bolada", cat:"objeto", gen:"f" }, { w:"boleto", cat:"objeto", gen:"m" },
+      { w:"boliche", cat:"objeto", gen:"m" }, { w:"bolota", cat:"natureza", gen:"f" },
+      { w:"bomba", cat:"objeto", gen:"f" }, { w:"borda", cat:"lugar", gen:"f" },
+      { w:"bote", cat:"objeto", gen:"m" }, { w:"braco", cat:"natureza", gen:"m" },
+      { w:"broa-de-milho", cat:"comida", gen:"f" }, { w:"cabana-de-palha", cat:"lugar", gen:"f" },
+      { w:"cabelo", cat:"natureza", gen:"m" }, { w:"cacau-puro", cat:"comida", gen:"m" },
+      { w:"cacho", cat:"natureza", gen:"m" }, { w:"cafeteira", cat:"objeto", gen:"f" },
+      { w:"cajueiro", cat:"natureza", gen:"m" }, { w:"calma", cat:"natureza", gen:"f" },
+      { w:"camada", cat:"natureza", gen:"f" }, { w:"camara", cat:"objeto", gen:"f" },
+      { w:"camiseta", cat:"objeto", gen:"f" }, { w:"cana", cat:"natureza", gen:"f" },
+      { w:"canto", cat:"natureza", gen:"m" }, { w:"capela", cat:"lugar", gen:"f" },
+      { w:"capim", cat:"natureza", gen:"m" }, { w:"capote", cat:"objeto", gen:"m" },
+      { w:"cara", cat:"natureza", gen:"f" }, { w:"caracol", cat:"ser", gen:"m" },
+      { w:"carinho", cat:"natureza", gen:"m" }, { w:"carne", cat:"comida", gen:"f" },
+      { w:"caroco", cat:"natureza", gen:"m" }, { w:"carona", cat:"objeto", gen:"f" },
+      { w:"casaco-azul", cat:"objeto", gen:"m" }, { w:"casal", cat:"ser", gen:"m" },
+      { w:"casca", cat:"natureza", gen:"f" }, { w:"casco", cat:"natureza", gen:"m" },
+      { w:"casulo", cat:"natureza", gen:"m" }, { w:"cauda", cat:"natureza", gen:"f" },
+      { w:"causa", cat:"natureza", gen:"f" }, { w:"cena", cat:"lugar", gen:"f" },
+      { w:"cento", cat:"objeto", gen:"m" }, { w:"cera", cat:"natureza", gen:"f" },
+      { w:"cerca", cat:"objeto", gen:"f" }, { w:"cevada", cat:"natureza", gen:"f" },
+      { w:"cidadao", cat:"ser", gen:"m" }, { w:"cima", cat:"lugar", gen:"f" },
+      { w:"cisne", cat:"ser", gen:"m" }, { w:"clara", cat:"comida", gen:"f" },
+      { w:"cobertor-macio", cat:"objeto", gen:"m" }, { w:"coisa", cat:"objeto", gen:"f" },
+      { w:"cola", cat:"objeto", gen:"f" }, { w:"colina-verde", cat:"lugar", gen:"f" },
+      { w:"cone", cat:"objeto", gen:"m" }, { w:"conta", cat:"objeto", gen:"f" },
+      { w:"cor", cat:"natureza", gen:"f" }, { w:"coracao", cat:"natureza", gen:"m" },
+      { w:"coragem", cat:"natureza", gen:"f" }, { w:"corpo", cat:"natureza", gen:"m" },
+      { w:"corrida", cat:"natureza", gen:"f" }, { w:"corte", cat:"objeto", gen:"m" },
+      { w:"costura", cat:"objeto", gen:"f" }, { w:"cotovelo", cat:"natureza", gen:"m" },
+      { w:"cova", cat:"lugar", gen:"f" }, { w:"crina", cat:"natureza", gen:"f" },
+      { w:"cueca", cat:"objeto", gen:"f" }, { w:"cuidado", cat:"natureza", gen:"m" },
+      { w:"cupido", cat:"ser", gen:"m" }, { w:"curso", cat:"lugar", gen:"m" },
+      { w:"curva", cat:"lugar", gen:"f" }, { w:"dama", cat:"ser", gen:"f" },
+      { w:"danca", cat:"natureza", gen:"f" }, { w:"data", cat:"objeto", gen:"f" },
+      { w:"dedal", cat:"objeto", gen:"m" }, { w:"dedo", cat:"natureza", gen:"m" },
+      { w:"defesa", cat:"lugar", gen:"f" }, { w:"degrau", cat:"objeto", gen:"m" },
+      { w:"dente", cat:"natureza", gen:"m" }, { w:"desenho", cat:"objeto", gen:"m" },
+      { w:"desejo", cat:"natureza", gen:"m" }, { w:"diamante-azul", cat:"objeto", gen:"m" },
+      { w:"dinheiro", cat:"objeto", gen:"m" }, { w:"dinossauro", cat:"ser", gen:"m" },
+      { w:"ditado", cat:"objeto", gen:"m" }, { w:"doce", cat:"comida", gen:"m" },
+      { w:"docura", cat:"natureza", gen:"f" }, { w:"dose", cat:"comida", gen:"f" },
+      { w:"duelo", cat:"natureza", gen:"m" }, { w:"eco", cat:"natureza", gen:"m" },
+      { w:"edificio", cat:"lugar", gen:"m" }, { w:"eixo", cat:"objeto", gen:"m" },
+      { w:"elefante", cat:"ser", gen:"m" }, { w:"elenco", cat:"ser", gen:"m" },
+      { w:"elogio", cat:"natureza", gen:"m" }, { w:"embalo", cat:"natureza", gen:"m" },
+      { w:"empate", cat:"natureza", gen:"m" }, { w:"encanto", cat:"natureza", gen:"m" },
+      { w:"enfeite", cat:"objeto", gen:"m" }, { w:"engano", cat:"natureza", gen:"m" },
+      { w:"ensaio", cat:"lugar", gen:"m" }, { w:"entrada", cat:"lugar", gen:"f" },
+      { w:"enxada", cat:"objeto", gen:"f" }, { w:"epoca", cat:"natureza", gen:"f" },
+      { w:"escudo-forte", cat:"objeto", gen:"m" }, { w:"espada", cat:"objeto", gen:"f" },
+      { w:"espera", cat:"lugar", gen:"f" }, { w:"espiga", cat:"natureza", gen:"f" },
+      { w:"estaca", cat:"objeto", gen:"f" }, { w:"estatua", cat:"objeto", gen:"f" },
+      { w:"estilo", cat:"objeto", gen:"m" }, { w:"estudo", cat:"lugar", gen:"m" },
+      { w:"etapa", cat:"lugar", gen:"f" }, { w:"exame", cat:"objeto", gen:"m" },
+      { w:"exemplo", cat:"objeto", gen:"m" }, { w:"exito", cat:"natureza", gen:"m" },
+      { w:"fala", cat:"natureza", gen:"f" }, { w:"fama", cat:"natureza", gen:"f" },
+      { w:"fato", cat:"objeto", gen:"m" }, { w:"favor", cat:"natureza", gen:"m" },
+      { w:"febre", cat:"natureza", gen:"f" }, { w:"ferida", cat:"natureza", gen:"f" },
+      { w:"ferias", cat:"natureza", gen:"f" }, { w:"festa", cat:"lugar", gen:"f" },
+      { w:"folga", cat:"natureza", gen:"f" }, { w:"fome", cat:"natureza", gen:"f" },
+      { w:"fora", cat:"lugar", gen:"m" }, { w:"forca", cat:"natureza", gen:"f" },
+      { w:"forma", cat:"objeto", gen:"f" }, { w:"forno", cat:"objeto", gen:"m" },
+      { w:"frase", cat:"objeto", gen:"f" }, { w:"freio", cat:"objeto", gen:"m" },
+      { w:"frente", cat:"lugar", gen:"f" }, { w:"fuba", cat:"comida", gen:"m" },
+      { w:"fuga", cat:"natureza", gen:"f" }, { w:"fundo", cat:"lugar", gen:"m" },
+      { w:"futebol", cat:"objeto", gen:"m" }, { w:"futuro", cat:"natureza", gen:"m" },
+      { w:"gema", cat:"comida", gen:"f" }, { w:"gemeo", cat:"ser", gen:"m" },
+      { w:"girassol", cat:"natureza", gen:"m" }, { w:"giro", cat:"natureza", gen:"m" },
+      { w:"golfe", cat:"objeto", gen:"m" }, { w:"goma", cat:"comida", gen:"f" },
+      { w:"gosto", cat:"natureza", gen:"m" }, { w:"grade", cat:"objeto", gen:"f" },
+      { w:"greve", cat:"natureza", gen:"f" }, { w:"gripe", cat:"natureza", gen:"f" },
+      { w:"grito", cat:"natureza", gen:"m" }, { w:"grupo", cat:"ser", gen:"m" },
+      { w:"guarda", cat:"ser", gen:"m" }, { w:"hino", cat:"objeto", gen:"m" },
+      { w:"homem", cat:"ser", gen:"m" }, { w:"hora", cat:"natureza", gen:"f" },
+      { w:"humano", cat:"ser", gen:"m" }, { w:"humor", cat:"natureza", gen:"m" },
+      { w:"idade", cat:"natureza", gen:"f" }, { w:"ideia", cat:"natureza", gen:"f" },
+      { w:"ima", cat:"objeto", gen:"m" }, { w:"imovel", cat:"lugar", gen:"m" },
+      { w:"inicio", cat:"lugar", gen:"m" }, { w:"inseto", cat:"ser", gen:"m" },
+      { w:"item", cat:"objeto", gen:"m" }, { w:"jantar", cat:"comida", gen:"m" },
+      { w:"jaqueta", cat:"objeto", gen:"f" }, { w:"jeito", cat:"natureza", gen:"m" },
+      { w:"joelho", cat:"natureza", gen:"m" }, { w:"jogo", cat:"objeto", gen:"m" },
+      { w:"jurado", cat:"ser", gen:"m" }, { w:"labio", cat:"natureza", gen:"m" },
+      { w:"lado", cat:"lugar", gen:"m" }, { w:"lanche", cat:"comida", gen:"m" },
+      { w:"latido", cat:"natureza", gen:"m" }, { w:"lazer", cat:"lugar", gen:"m" },
+      { w:"legume", cat:"comida", gen:"m" }, { w:"lei", cat:"objeto", gen:"f" },
+      { w:"leitura", cat:"objeto", gen:"f" }, { w:"lenda", cat:"objeto", gen:"f" },
+      { w:"lente", cat:"objeto", gen:"f" }, { w:"leopardo", cat:"ser", gen:"m" },
+      { w:"letra", cat:"objeto", gen:"f" }, { w:"licao", cat:"objeto", gen:"f" },
+      { w:"linha", cat:"objeto", gen:"f" }, { w:"liquido", cat:"comida", gen:"m" },
+      { w:"lista", cat:"objeto", gen:"f" }, { w:"litro", cat:"objeto", gen:"m" },
+      { w:"lixo", cat:"objeto", gen:"m" }, { w:"local", cat:"lugar", gen:"m" },
+      { w:"lona", cat:"objeto", gen:"f" }, { w:"lucro", cat:"objeto", gen:"m" },
+      { w:"lugar", cat:"lugar", gen:"m" }, { w:"luta", cat:"natureza", gen:"f" },
+      { w:"madeira", cat:"natureza", gen:"f" }, { w:"magia", cat:"natureza", gen:"f" },
+      { w:"magica", cat:"natureza", gen:"f" }, { w:"magico", cat:"ser", gen:"m" },
+      { w:"maio", cat:"objeto", gen:"m" }, { w:"mamadeira", cat:"objeto", gen:"f" },
+      { w:"mancha", cat:"natureza", gen:"f" }, { w:"mania", cat:"natureza", gen:"f" },
+      { w:"marca", cat:"objeto", gen:"f" }, { w:"margarida", cat:"natureza", gen:"f" },
+      { w:"medalha", cat:"objeto", gen:"f" }, { w:"medida", cat:"objeto", gen:"f" },
+      { w:"medo", cat:"natureza", gen:"m" }, { w:"meio", cat:"lugar", gen:"m" },
+      { w:"mente", cat:"natureza", gen:"f" }, { w:"mentira", cat:"natureza", gen:"f" },
+      { w:"metade", cat:"comida", gen:"f" }, { w:"metal", cat:"natureza", gen:"m" },
+      { w:"minuto", cat:"natureza", gen:"m" }, { w:"miolo", cat:"comida", gen:"m" },
+      { w:"missa", cat:"lugar", gen:"f" }, { w:"misto", cat:"comida", gen:"m" },
+      { w:"moda", cat:"objeto", gen:"f" }, { w:"modelo", cat:"objeto", gen:"m" },
+      { w:"molde", cat:"objeto", gen:"m" }, { w:"morte", cat:"natureza", gen:"f" },
+      { w:"motivo", cat:"natureza", gen:"m" }, { w:"motor", cat:"objeto", gen:"m" },
+      { w:"muda", cat:"natureza", gen:"f" }, { w:"multa", cat:"objeto", gen:"f" },
+      { w:"mundo", cat:"lugar", gen:"m" }, { w:"musica", cat:"natureza", gen:"f" },
+      { w:"namoro", cat:"natureza", gen:"m" }, { w:"nariz", cat:"natureza", gen:"m" },
+      { w:"negocio", cat:"lugar", gen:"m" }, { w:"nome", cat:"objeto", gen:"m" },
+      { w:"noticia", cat:"objeto", gen:"f" }, { w:"novela", cat:"objeto", gen:"f" },
+      { w:"novelo", cat:"objeto", gen:"m" }, { w:"obra", cat:"lugar", gen:"f" },
+      { w:"odio", cat:"natureza", gen:"m" }, { w:"olho", cat:"natureza", gen:"m" },
+      { w:"ontem", cat:"natureza", gen:"m" }, { w:"opcao", cat:"objeto", gen:"f" },
+      { w:"opiniao", cat:"natureza", gen:"f" }, { w:"ordem", cat:"objeto", gen:"f" },
+      { w:"orelha", cat:"natureza", gen:"f" }, { w:"orgulho", cat:"natureza", gen:"m" },
+      { w:"origem", cat:"lugar", gen:"f" }, { w:"ovo-frito", cat:"comida", gen:"m" },
+      { w:"padre", cat:"ser", gen:"m" }, { w:"painel", cat:"objeto", gen:"m" },
+      { w:"paisagem", cat:"natureza", gen:"f" }, { w:"palavra", cat:"objeto", gen:"f" },
+      { w:"palito", cat:"objeto", gen:"m" }, { w:"palma", cat:"natureza", gen:"f" },
+      { w:"palmeira", cat:"natureza", gen:"f" }, { w:"pano", cat:"objeto", gen:"m" },
+      { w:"papagaio", cat:"ser", gen:"m" }, { w:"papelao", cat:"objeto", gen:"m" },
+      { w:"par", cat:"objeto", gen:"m" }, { w:"parte", cat:"lugar", gen:"f" },
+      { w:"passado", cat:"natureza", gen:"m" }, { w:"passeio", cat:"lugar", gen:"m" },
+      { w:"pata", cat:"natureza", gen:"f" }, { w:"patins", cat:"objeto", gen:"m" },
+      { w:"pausa", cat:"natureza", gen:"f" }, { w:"paz", cat:"natureza", gen:"f" },
+      { w:"pe", cat:"natureza", gen:"m" }, { w:"pedaco", cat:"comida", gen:"m" },
+      { w:"pedal", cat:"objeto", gen:"m" }, { w:"pedido", cat:"objeto", gen:"m" },
+      { w:"pegada", cat:"natureza", gen:"f" }, { w:"pele", cat:"natureza", gen:"f" },
+      { w:"pelo", cat:"natureza", gen:"m" }, { w:"pena", cat:"natureza", gen:"f" },
+      { w:"pente", cat:"objeto", gen:"m" }, { w:"perigo", cat:"natureza", gen:"m" },
+      { w:"perna", cat:"natureza", gen:"f" }, { w:"pescaria", cat:"lugar", gen:"f" },
+      { w:"pescoco", cat:"natureza", gen:"m" }, { w:"peso", cat:"objeto", gen:"m" },
+      { w:"picada", cat:"natureza", gen:"f" }, { w:"piloto-azul", cat:"ser", gen:"m" },
+      { w:"pimentao", cat:"comida", gen:"m" }, { w:"pingo", cat:"natureza", gen:"m" },
+      { w:"pino", cat:"objeto", gen:"m" }, { w:"pintura", cat:"objeto", gen:"f" },
+      { w:"pires", cat:"objeto", gen:"m" }, { w:"plano", cat:"objeto", gen:"m" },
+      { w:"poema", cat:"objeto", gen:"m" }, { w:"polegar", cat:"natureza", gen:"m" },
+      { w:"poltrona", cat:"objeto", gen:"f" }, { w:"pomada", cat:"objeto", gen:"f" },
+      { w:"pombo", cat:"ser", gen:"m" }, { w:"ponta", cat:"lugar", gen:"f" },
+      { w:"ponto", cat:"lugar", gen:"m" }, { w:"posse", cat:"objeto", gen:"f" },
+      { w:"poste", cat:"objeto", gen:"m" }, { w:"povo", cat:"ser", gen:"m" },
+      { w:"prado", cat:"lugar", gen:"m" }, { w:"prazer", cat:"natureza", gen:"m" },
+      { w:"preco", cat:"objeto", gen:"m" }, { w:"presente", cat:"objeto", gen:"m" },
+      { w:"preso", cat:"ser", gen:"m" }, { w:"primo", cat:"ser", gen:"m" },
+      { w:"produto", cat:"objeto", gen:"m" }, { w:"prova", cat:"objeto", gen:"f" },
+      { w:"pulo", cat:"natureza", gen:"m" }, { w:"quadrado", cat:"objeto", gen:"m" },
+      { w:"queda", cat:"natureza", gen:"f" }, { w:"queixo", cat:"natureza", gen:"m" },
+      { w:"quilo", cat:"objeto", gen:"m" }, { w:"rabo", cat:"natureza", gen:"m" },
+      { w:"ralador", cat:"objeto", gen:"m" }, { w:"ramo", cat:"natureza", gen:"m" },
+      { w:"razao", cat:"natureza", gen:"f" }, { w:"receita", cat:"objeto", gen:"f" },
+      { w:"regador", cat:"objeto", gen:"m" }, { w:"regra", cat:"objeto", gen:"f" },
+      { w:"remedio", cat:"objeto", gen:"m" }, { w:"renda", cat:"objeto", gen:"f" },
+      { w:"repouso", cat:"lugar", gen:"m" }, { w:"resumo", cat:"objeto", gen:"m" },
+      { w:"retrato", cat:"objeto", gen:"m" }, { w:"risada", cat:"natureza", gen:"f" },
+      { w:"risco", cat:"natureza", gen:"m" }, { w:"ritmo", cat:"natureza", gen:"m" },
+      { w:"rodo", cat:"objeto", gen:"m" }, { w:"rolo", cat:"objeto", gen:"m" },
+      { w:"roma", cat:"comida", gen:"f" }, { w:"rosa", cat:"natureza", gen:"f" },
+      { w:"rosto", cat:"natureza", gen:"m" }, { w:"rota", cat:"lugar", gen:"f" },
+      { w:"ruido", cat:"natureza", gen:"m" }, { w:"rumo", cat:"lugar", gen:"m" },
+      { w:"sabao", cat:"objeto", gen:"m" }, { w:"sabor", cat:"natureza", gen:"m" },
+      { w:"saida", cat:"lugar", gen:"f" }, { w:"salario", cat:"objeto", gen:"m" },
+      { w:"salto", cat:"natureza", gen:"m" }, { w:"saudade", cat:"natureza", gen:"f" },
+      { w:"seda", cat:"objeto", gen:"f" }, { w:"sede", cat:"natureza", gen:"f" },
+      { w:"segredo", cat:"objeto", gen:"m" }, { w:"semana", cat:"natureza", gen:"f" },
+      { w:"sentido", cat:"natureza", gen:"m" }, { w:"serie", cat:"objeto", gen:"f" },
+      { w:"seta-azul", cat:"objeto", gen:"f" }, { w:"sinal", cat:"objeto", gen:"m" },
+      { w:"sobra", cat:"comida", gen:"f" }, { w:"soldado-real", cat:"ser", gen:"m" },
+      { w:"sono", cat:"natureza", gen:"m" }, { w:"sorriso", cat:"natureza", gen:"m" },
+      { w:"sorte", cat:"natureza", gen:"f" }, { w:"suor", cat:"natureza", gen:"m" },
+      { w:"surpresa", cat:"objeto", gen:"f" }, { w:"tabela", cat:"objeto", gen:"f" },
+      { w:"tabuada", cat:"objeto", gen:"f" }, { w:"taca", cat:"objeto", gen:"f" },
+      { w:"talher", cat:"objeto", gen:"m" }, { w:"tarefa", cat:"objeto", gen:"f" },
+      { w:"tecido", cat:"objeto", gen:"m" }, { w:"tema", cat:"objeto", gen:"m" },
+      { w:"testa", cat:"natureza", gen:"f" }, { w:"teto", cat:"lugar", gen:"m" },
+      { w:"tijolo", cat:"objeto", gen:"m" }, { w:"tinta", cat:"objeto", gen:"f" },
+      { w:"titulo", cat:"objeto", gen:"m" }, { w:"toco", cat:"natureza", gen:"m" },
+      { w:"torre", cat:"lugar", gen:"f" }, { w:"treino", cat:"lugar", gen:"m" },
+      { w:"tulipa", cat:"natureza", gen:"f" }, { w:"umbigo", cat:"natureza", gen:"m" },
+      { w:"uso", cat:"objeto", gen:"m" }, { w:"vaga", cat:"lugar", gen:"f" },
+      { w:"vagalume", cat:"ser", gen:"m" }, { w:"valor", cat:"objeto", gen:"m" },
+      { w:"vareta", cat:"objeto", gen:"f" }, { w:"veludo", cat:"objeto", gen:"m" },
+      { w:"venda", cat:"lugar", gen:"f" }, { w:"verdade", cat:"natureza", gen:"f" },
+      { w:"verso", cat:"objeto", gen:"m" }, { w:"vez", cat:"natureza", gen:"f" },
+      { w:"viagem", cat:"lugar", gen:"f" }, { w:"vidro", cat:"objeto", gen:"m" },
+      { w:"vista", cat:"lugar", gen:"f" }, { w:"vitoria", cat:"natureza", gen:"f" },
+      { w:"volante", cat:"objeto", gen:"m" }, { w:"volta", cat:"lugar", gen:"f" },
+      { w:"voz", cat:"natureza", gen:"f" }, { w:"xale", cat:"objeto", gen:"m" },
+      { w:"xarope", cat:"comida", gen:"m" }, { w:"xixi", cat:"natureza", gen:"m" },
+      { w:"zero", cat:"objeto", gen:"m" }, { w:"zoologico-real", cat:"lugar", gen:"m" }
+    ];
+
+    // Monta exatamente 1.000 palavras únicas e inéditas (800 Simples + 200 Desafios Leves)
     const WORD_BANK = [];
     const seenWords = new Set();
 
-    for (const raw of SIMPLE_LIST) {
-      const clean = (ACCENTS[raw] || raw).trim().toLowerCase();
-      if (!seenWords.has(clean) && WORD_BANK.filter(x => x.t === 'S').length < 800) {
-        seenWords.add(clean);
-        WORD_BANK.push({ w: clean, s: splitSyllables(clean), t: 'S' });
+    function addEntry(rawWord, type, cat, gen) {
+      const clean = (ACCENTS[rawWord] || rawWord).trim().toLowerCase();
+      if (FORBIDDEN_33.has(clean)) return false;
+      if (seenWords.has(clean)) return false;
+      seenWords.add(clean);
+      const syllables = splitSyllables(clean);
+      WORD_BANK.push({
+        w: clean,
+        t: type,       // 'S' = Simples (800), 'C' = Desafio Leve (200)
+        cat: cat,      // 'ser' | 'comida' | 'objeto' | 'lugar' | 'natureza'
+        gen: gen,      // 'm' | 'f'
+        syl: syllables,
+        sylCount: syllables.length
+      });
+      return true;
+    }
+
+    // Popula palavras simples a partir do mapa de categorias
+    for (const [cat, genders] of Object.entries(RAW_SIMPLE_BY_CAT)) {
+      for (const [gen, list] of Object.entries(genders)) {
+        for (const raw of list) {
+          if (WORD_BANK.filter(x => x.t === 'S').length < 800) {
+            addEntry(raw, 'S', cat, gen);
+          }
+        }
       }
     }
 
-    for (const raw of CHALLENGE_LIST) {
-      const clean = (ACCENTS[raw] || raw).trim().toLowerCase();
-      if (!seenWords.has(clean) && WORD_BANK.filter(x => x.t === 'C').length < 200) {
-        seenWords.add(clean);
-        WORD_BANK.push({ w: clean, s: splitSyllables(clean), t: 'C' });
+    // Completa as 800 simples com a lista complementar etiquetada
+    for (const item of EXTRA_SIMPLE_WORDS) {
+      if (WORD_BANK.filter(x => x.t === 'S').length >= 800) break;
+      addEntry(item.w, 'S', item.cat, item.gen);
+    }
+
+    // Popula exatamente 200 palavras de desafio leve
+    for (const [cat, genders] of Object.entries(RAW_CHALLENGE_BY_CAT)) {
+      for (const [gen, list] of Object.entries(genders)) {
+        for (const raw of list) {
+          if (WORD_BANK.filter(x => x.t === 'C').length < 200) {
+            addEntry(raw, 'C', cat, gen);
+          }
+        }
       }
     }
 
     const TOTAL_WORDS = WORD_BANK.length; // 1.000
 
     // =========================================================================
-    // 2. PERSISTÊNCIA E SISTEMA DE MEMORIZAÇÃO VISUAL (SIGHT-WORDS)
+    // 3. PERSISTÊNCIA E SISTEMA DE MEMORIZAÇÃO VISUAL (SIGHT-WORDS)
     // =========================================================================
-    const STORAGE_KEY = 'palavrinhas_1000_auto_v2';
+    const STORAGE_KEY = 'palavrinhas_1000_sight_v3';
 
     let state = {
-      stars: {},       // { palavra: 0 | 1 | 2 } -> 2 = Memorizada ⭐ (se errar, volta a 0)
-      activePool: [],  // 30 palavras em rotação ativa (24 Simples + 6 Desafios)
+      stars: {},       // { palavra: 0 | 1 | 2 } -> 2 = Memorizada ⭐ (erro zera)
+      activePool: [],  // 30 palavras em rotação (24 Simples + 6 Desafios)
       uppercase: true, // CAIXA ALTA por padrão
       rounds: 0
     };
@@ -537,52 +845,45 @@
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          state = { ...state, ...JSON.parse(raw) };
-        }
+        if (raw) state = { ...state, ...JSON.parse(raw) };
       } catch (e) {}
       refillActivePool();
     }
 
-    // Mantém 24 simples + 6 desafios no bloco ativo até ganharem 2 estrelas
     function refillActivePool() {
       state.activePool = state.activePool.filter(w => (state.stars[w] || 0) < 2);
 
-      const simpleCount = state.activePool.filter(w => {
+      const simpleInPool = state.activePool.filter(w => {
         const obj = WORD_BANK.find(x => x.w === w);
         return obj && obj.t === 'S';
       }).length;
 
-      const chalCount = state.activePool.filter(w => {
+      const chalInPool = state.activePool.filter(w => {
         const obj = WORD_BANK.find(x => x.w === w);
         return obj && obj.t === 'C';
       }).length;
 
-      if (simpleCount < 24) {
-        const need = 24 - simpleCount;
+      if (simpleInPool < 24) {
+        const need = 24 - simpleInPool;
         const candidates = WORD_BANK.filter(
           x => x.t === 'S' && (state.stars[x.w] || 0) < 2 && !state.activePool.includes(x.w)
         );
-        for (const item of candidates.slice(0, need)) {
-          state.activePool.push(item.w);
-        }
+        for (const item of candidates.slice(0, need)) state.activePool.push(item.w);
       }
 
-      if (chalCount < 6) {
-        const need = 6 - chalCount;
+      if (chalInPool < 6) {
+        const need = 6 - chalInPool;
         const candidates = WORD_BANK.filter(
           x => x.t === 'C' && (state.stars[x.w] || 0) < 2 && !state.activePool.includes(x.w)
         );
-        for (const item of candidates.slice(0, need)) {
-          state.activePool.push(item.w);
-        }
+        for (const item of candidates.slice(0, need)) state.activePool.push(item.w);
       }
 
       saveState();
     }
 
     // =========================================================================
-    // 3. ÁUDIO (WEB SPEECH PT-BR + EFEITOS SONOROS SUAVES SEM URL EXTERNA)
+    // 4. ÁUDIO E DICA DE SÍLABAS APENAS COM BOLINHAS (SEM REVELAR LETRAS)
     // =========================================================================
     let audioCtx = null;
 
@@ -598,8 +899,8 @@
 
         if (type === 'ok') {
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(523.25, now); // Dó
-          osc.frequency.setValueAtTime(659.25, now + 0.09); // Mi
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.09);
           gain.gain.setValueAtTime(0.14, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
           osc.start(now);
@@ -635,8 +936,52 @@
       window.speechSynthesis.speak(utter);
     }
 
+    // Mostra apenas bolinhas (● — ● — ●) e fala pausadamente sem exibir nenhuma letra
+    function triggerSyllableDots() {
+      const cur = round.queue[round.index];
+      if (!cur) return;
+
+      const box = document.getElementById('syllableDotsBox');
+      const row = document.getElementById('syllableDotsRow');
+      const label = document.getElementById('syllableCountLabel');
+
+      box.classList.remove('hidden');
+      row.innerHTML = '';
+
+      cur.syl.forEach((_, idx) => {
+        const dot = document.createElement('span');
+        dot.className = 'syllable-dot';
+        dot.id = `syl-dot-${idx}`;
+        row.appendChild(dot);
+
+        if (idx < cur.syl.length - 1) {
+          const dash = document.createElement('span');
+          dash.className = 'text-indigo-300 font-extrabold text-lg';
+          dash.textContent = '—';
+          row.appendChild(dash);
+        }
+      });
+
+      const count = cur.sylCount;
+      label.textContent = count === 1 ? '1 pedacinho' : `${count} pedacinhos`;
+
+      // Pulsa cada bolinha no ritmo da fala silabada
+      cur.syl.forEach((_, idx) => {
+        setTimeout(() => {
+          const dotEl = document.getElementById(`syl-dot-${idx}`);
+          if (dotEl) {
+            dotEl.classList.add('pulse');
+            setTimeout(() => dotEl.classList.remove('pulse'), 320);
+          }
+        }, idx * 420);
+      });
+
+      // Fala as sílabas pausadas usando reticências para o TTS marcar a separação sonora
+      speakText(cur.syl.join('... '), 0.72);
+    }
+
     // =========================================================================
-    // 4. MONTAGEM DA RODADA (8 SIMPLES + 2 DESAFIOS, 3 PRIMEIRAS SEMPRE SIMPLES)
+    // 5. MONTAGEM DA RODADA (8 SIMPLES + 2 DESAFIOS, 3 PRIMEIRAS SEMPRE SIMPLES)
     // =========================================================================
     let round = {
       queue: [],
@@ -645,7 +990,8 @@
       wordStartMs: 0,
       attempts: 0,
       wrongGuesses: [],
-      sentence: ''
+      closingText: '',
+      closingIsSentence: true
     };
 
     function shuffle(arr) {
@@ -676,14 +1022,13 @@
         chalPool = [...chalPool, ...shuffle(WORD_BANK.filter(x => x.t === 'C')).slice(0, 6)];
       }
 
-      // Prioriza levemente palavras que já têm 1 estrela para fechar a memorização
       const prioritizeOneStar = (list) =>
         shuffle(list).sort((a, b) => (state.stars[b.w] || 0) - (state.stars[a.w] || 0));
 
       const selectedSimple = prioritizeOneStar(simplePool).slice(0, 8);
       const selectedChal = prioritizeOneStar(chalPool).slice(0, 2);
 
-      // As 3 primeiras são SEMPRE simples para dar ritmo e confiança
+      // As 3 primeiras são SEMPRE simples
       const firstThree = selectedSimple.slice(0, 3);
       const nextSeven = shuffle([...selectedSimple.slice(3, 8), ...selectedChal]);
 
@@ -691,17 +1036,15 @@
     }
 
     // =========================================================================
-    // 5. FILTRO ANTI-PEGADINHA PARA DISLEXIA (SEM ESPELHAMENTO b/d e p/q)
+    // 6. PROTEÇÃO CONTRA ESPELHAMENTO (b/d e p/q) NAS ALTERNATIVAS
     // =========================================================================
     function hasMirrorTrap(wordA, wordB) {
       const mirrorPairs = [['b', 'd'], ['p', 'q']];
-      // Evita iniciais espelhadas (ex: BOLA vs DOLA, PATO vs QATO)
       for (const [x, y] of mirrorPairs) {
         if ((wordA[0] === x && wordB[0] === y) || (wordA[0] === y && wordB[0] === x)) {
           return true;
         }
       }
-      // Evita palavras de mesmo tamanho que diferem por 1 letra espelhada em qualquer posição
       if (wordA.length === wordB.length) {
         let diffCount = 0;
         let hasMirrorDiff = false;
@@ -741,7 +1084,7 @@
     }
 
     // =========================================================================
-    // 6. INTERFACE E FLUXO DO JOGO
+    // 7. FLUXO DO JOGO
     // =========================================================================
     function formatCase(str) {
       return state.uppercase ? str.toUpperCase() : str.toLowerCase();
@@ -751,7 +1094,7 @@
       const memCount = Object.values(state.stars).filter(v => v >= 2).length;
       const pct = Math.round((memCount / TOTAL_WORDS) * 100);
       document.getElementById('homeProgressText').textContent =
-        `⭐ ${memCount} de 1.000 palavras memorizadas`;
+        `⭐ ${memCount} / 1.000 memorizadas`;
       document.getElementById('homeProgressBar').style.width = `${pct}%`;
 
       const label = state.uppercase ? 'abc' : 'ABC';
@@ -764,15 +1107,13 @@
       saveState();
       updateHomeUI();
 
-      const cur = round.queue[round.index];
-      if (cur && !document.getElementById('screenGame').classList.contains('hidden')) {
-        document.getElementById('syllableHintBox').textContent = formatCase(cur.s);
+      if (!document.getElementById('screenGame').classList.contains('hidden')) {
         document.querySelectorAll('#optionsGrid button').forEach(btn => {
           btn.textContent = formatCase(btn.dataset.word);
         });
       }
-      if (round.sentence && !document.getElementById('screenSummary').classList.contains('hidden')) {
-        document.getElementById('sumSentence').textContent = formatCase(round.sentence);
+      if (round.closingText && !document.getElementById('screenSummary').classList.contains('hidden')) {
+        document.getElementById('closingBlockText').textContent = formatCase(round.closingText);
       }
     }
 
@@ -781,12 +1122,8 @@
       if (cur) speakText(cur.w, rate);
     }
 
-    function speakBonusSentence() {
-      if (round.sentence) speakText(round.sentence, 0.9);
-    }
-
-    function revealSyllables() {
-      document.getElementById('syllableHintBox').classList.remove('hidden');
+    function speakClosingText() {
+      if (round.closingText) speakText(round.closingText, 0.9);
     }
 
     function startRound() {
@@ -815,10 +1152,7 @@
       document.getElementById('roundStepBadge').textContent = `${step} / 10`;
       document.getElementById('roundStepBar').style.width = `${step * 10}%`;
 
-      const sylBox = document.getElementById('syllableHintBox');
-      sylBox.classList.add('hidden');
-      sylBox.textContent = formatCase(cur.s);
-
+      document.getElementById('syllableDotsBox').classList.add('hidden');
       document.getElementById('feedbackBanner').textContent = '';
 
       const options = shuffle([cur.w, ...getDistractors(cur)]);
@@ -828,14 +1162,13 @@
       options.forEach(wordStr => {
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'btn-choice dyslexia-text rounded-2xl py-5 px-4 text-2xl sm:text-3xl font-black text-slate-800 text-center';
+        btn.className = 'btn-choice dyslexia-text rounded-2xl py-5 px-4 text-2xl sm:text-3xl font-extrabold text-slate-800 text-center';
         btn.dataset.word = wordStr;
         btn.textContent = formatCase(wordStr);
         btn.onclick = () => handleChoice(wordStr, btn);
         grid.appendChild(btn);
       });
 
-      // Toca o áudio automaticamente ao carregar a palavra
       setTimeout(() => speakCurrentWord(0.92), 180);
     }
 
@@ -858,24 +1191,24 @@
 
           if (prev < 2 && next === 2) {
             playChime('star');
-            banner.className = 'min-h-[32px] flex items-center justify-center text-center font-black text-base sm:text-lg text-emerald-700';
+            banner.className = 'min-h-[30px] flex items-center justify-center text-center font-extrabold text-base text-emerald-700';
             banner.textContent = '⭐ Memorizada! Mais uma conquistada!';
           } else {
             playChime('ok');
-            banner.className = 'min-h-[32px] flex items-center justify-center text-center font-black text-base sm:text-lg text-emerald-700';
+            banner.className = 'min-h-[30px] flex items-center justify-center text-center font-extrabold text-base text-emerald-700';
             banner.textContent = '✅ Muito bem! De primeira!';
           }
         } else {
-          // Se trocou a palavra, estrelas voltam a 0 para automatizar o reconhecimento visual
           state.stars[cur.w] = 0;
           playChime('ok');
-          banner.className = 'min-h-[32px] flex items-center justify-center text-center font-black text-base sm:text-lg text-emerald-700';
+          banner.className = 'min-h-[30px] flex items-center justify-center text-center font-extrabold text-base text-emerald-700';
           banner.textContent = '👏 Isso aí! Acertou!';
         }
 
         round.results.push({
           word: cur.w,
-          type: cur.t,
+          cat: cur.cat,
+          gen: cur.gen,
           attempts: round.attempts,
           sec,
           wrongGuesses: [...round.wrongGuesses]
@@ -891,37 +1224,84 @@
           } else {
             finishRound();
           }
-        }, 780);
+        }, 760);
       } else {
         btn.classList.add('is-wrong');
         round.wrongGuesses.push(chosen);
         playChime('err');
 
         const banner = document.getElementById('feedbackBanner');
-        banner.className = 'min-h-[32px] flex items-center justify-center text-center font-extrabold text-sm sm:text-base text-amber-800';
+        banner.className = 'min-h-[30px] flex items-center justify-center text-center font-bold text-sm text-amber-800';
         banner.textContent = `Essa é "${formatCase(chosen)}". Ouça de novo!`;
-        speakText(cur.w, 0.75);
+        speakText(cur.w, 0.72);
       }
     }
 
     // =========================================================================
-    // 7. CELEBRAÇÃO E RELATÓRIO WHATSAPP NO PADRÃO EXATO
+    // 8. MONTAGEM DE FRASE COERENTE POR CATEGORIA/GÊNERO (OU LISTA DE RESERVA)
     // =========================================================================
-    function generateRoundSentence(results) {
-      const words = results.filter(r => r.type === 'S').map(r => r.word.toUpperCase());
-      const w1 = words[0] || 'BOLA';
-      const w2 = words[1] || 'GATO';
-      const w3 = words[2] || 'CASA';
-      const w4 = words[3] || 'VACA';
+    function buildCoherentClosing(results) {
+      const art = (g) => (g === 'f' ? 'A' : 'O');
+      const prepPara = (g) => (g === 'f' ? 'PARA A' : 'PARA O');
+      const prepNo = (g) => (g === 'f' ? 'NA' : 'NO');
 
-      const templates = [
-        `A ${w1} VIU O ${w2}. A ${w3} QUER A ${w4}.`,
-        `O ${w1} VIU A ${w2}. O ${w3} QUER O ${w4}.`,
-        `A ${w1} ACHOU O ${w2} E A ${w3}.`
-      ];
-      return templates[Math.floor(Math.random() * templates.length)];
+      const seres = results.filter(r => r.cat === 'ser');
+      const comidas = results.filter(r => r.cat === 'comida');
+      const objetos = results.filter(r => r.cat === 'objeto');
+      const lugares = results.filter(r => r.cat === 'lugar');
+      const naturezas = results.filter(r => r.cat === 'natureza');
+
+      if (seres.length > 0) {
+        const s = seres[0];
+        if (comidas.length > 0) {
+          const c = comidas[0];
+          return {
+            isSentence: true,
+            text: `${art(s.gen)} ${s.word.toUpperCase()} COMEU ${art(c.gen)} ${c.word.toUpperCase()}.`
+          };
+        }
+        if (objetos.length > 0) {
+          const o = objetos[0];
+          return {
+            isSentence: true,
+            text: `${art(s.gen)} ${s.word.toUpperCase()} ACHOU ${art(o.gen)} ${o.word.toUpperCase()}.`
+          };
+        }
+        if (lugares.length > 0) {
+          const l = lugares[0];
+          return {
+            isSentence: true,
+            text: `${art(s.gen)} ${s.word.toUpperCase()} FOI ${prepPara(l.gen)} ${l.word.toUpperCase()}.`
+          };
+        }
+        if (naturezas.length > 0) {
+          const n = naturezas[0];
+          return {
+            isSentence: true,
+            text: `${art(s.gen)} ${s.word.toUpperCase()} OLHOU ${art(n.gen)} ${n.word.toUpperCase()}.`
+          };
+        }
+      }
+
+      if (objetos.length > 0 && lugares.length > 0) {
+        const o = objetos[0];
+        const l = lugares[0];
+        return {
+          isSentence: true,
+          text: `${art(o.gen)} ${o.word.toUpperCase()} ESTÁ ${prepNo(l.gen)} ${l.word.toUpperCase()}.`
+        };
+      }
+
+      // Reserva natural quando não houver par lógico na rodada: lista separada por vírgulas
+      return {
+        isSentence: false,
+        text: results.map(r => r.word.toUpperCase()).join(', ')
+      };
     }
 
+    // =========================================================================
+    // 9. FECHAMENTO E RELATÓRIO WHATSAPP
+    // =========================================================================
     function finishRound() {
       state.rounds = (state.rounds || 0) + 1;
       saveState();
@@ -933,7 +1313,7 @@
       sumScreen.classList.remove('hidden');
       sumScreen.classList.add('flex');
 
-      const total = round.results.length; // 10
+      const total = round.results.length;
       const firstTryCount = round.results.filter(r => r.attempts === 1).length;
       const pct = Math.round((firstTryCount / total) * 100);
       const avgSec = Math.round(round.results.reduce((acc, r) => acc + r.sec, 0) / total);
@@ -953,8 +1333,14 @@
         document.getElementById('summarySubtitle').textContent = 'Você está ficando cada vez mais rápida!';
       }
 
-      round.sentence = generateRoundSentence(round.results);
-      document.getElementById('sumSentence').textContent = formatCase(round.sentence);
+      const closing = buildCoherentClosing(round.results);
+      round.closingText = closing.text;
+      round.closingIsSentence = closing.isSentence;
+
+      document.getElementById('closingBlockTitle').textContent = closing.isSentence
+        ? '🗣️ Frase da rodada'
+        : '📖 Palavras da rodada';
+      document.getElementById('closingBlockText').textContent = formatCase(closing.text);
 
       const now = new Date();
       const dd = String(now.getDate()).padStart(2, '0');
@@ -965,9 +1351,7 @@
       const dateFormatted = `${dd}/${mm}/${yyyy} ${hh}:${min}`;
 
       const lines = round.results.map(r => {
-        if (r.attempts === 1) {
-          return `✅ ${r.word} — de primeira, ${r.sec}s`;
-        }
+        if (r.attempts === 1) return `✅ ${r.word} — de primeira, ${r.sec}s`;
         return `🔁 ${r.word} — ${r.attempts} tentativas, ${r.sec}s (trocou por: ${r.wrongGuesses.join(', ')})`;
       });
 
@@ -977,19 +1361,23 @@
         .map(r => r.word)
         .join(', ');
 
+      const closingLine = closing.isSentence
+        ? `🗣️ Frase: *“${closing.text}”*`
+        : `📖 Palavras da rodada: ${closing.text.toLowerCase()}`;
+
       const reportText = [
         `📚 *Palavrinhas — relatório*`,
         `📅 ${dateFormatted}`,
         ``,
         `✅ De primeira: ${firstTryCount} de 10 (${pct}%)`,
         `⏱️ Tempo médio por palavra: ${avgSec}s`,
-        `⭐ Memorizadas no total: ${totalMemorized} de 1.000`,
+        `⭐ Memorizadas: ${totalMemorized} / 1.000`,
         ``,
         `*Palavra por palavra*`,
         ...lines,
         ``,
         `🐢 Mais demoradas: ${slowestTwo}`,
-        `🗣️ Frase: *“${round.sentence}”*`
+        closingLine
       ].join('\n');
 
       document.getElementById('reportBox').textContent = reportText;
@@ -1018,7 +1406,7 @@
     }
 
     // =========================================================================
-    // 8. VISUALIZAÇÃO DISCRETA DO ÁLBUM DE PALAVRAS
+    // 10. ÁLBUM DE PALAVRAS
     // =========================================================================
     let albumMode = 'memorized';
 
@@ -1028,7 +1416,7 @@
       modal.classList.add('flex');
       const mem = Object.values(state.stars).filter(v => v >= 2).length;
       document.getElementById('albumStats').textContent =
-        `⭐ ${mem} de 1.000 memorizadas • Toque em uma palavra para ouvir`;
+        `⭐ ${mem} / 1.000 memorizadas • Toque para ouvir`;
       renderAlbum();
     }
 
@@ -1059,7 +1447,7 @@
       });
 
       if (list.length === 0) {
-        container.innerHTML = '<p class="text-xs font-bold text-slate-500 p-2">Nenhuma palavra nesta aba ainda. Vamos jogar!</p>';
+        container.innerHTML = '<p class="text-xs font-bold text-slate-500 p-2">Nenhuma palavra aqui ainda. Vamos jogar!</p>';
         return;
       }
 
