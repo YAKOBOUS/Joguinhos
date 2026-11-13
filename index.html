@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ábaco Interativo de Tabuada</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            font-size: 1.3rem;
+            color: #1e3a8a;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        p.subtitle {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .dashboard {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            text-align: center;
+            width: 100%;
+            max-width: 360px;
+            box-sizing: border-box;
+        }
+        .result-text {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #2563eb;
+            margin: 5px 0;
+        }
+        .hint {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 30px repeat(10, 1fr);
+            grid-template-rows: 30px repeat(10, 1fr);
+            gap: 4px;
+            background: #cbd5e1;
+            padding: 8px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            max-width: 380px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .cell-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: #475569;
+        }
+        .cell {
+            aspect-ratio: 1;
+            background: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #94a3b8;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.15s, transform 0.1s;
+        }
+        .cell.highlight {
+            background: #93c5fd;
+            color: #1e3a8a;
+        }
+        .cell.selected {
+            background: #2563eb;
+            color: white;
+            transform: scale(1.05);
+        }
+        .cell.remainder {
+            background: #f59e0b !important;
+            color: white !important;
+        }
+        .actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 360px;
+        }
+        button {
+            flex: 1;
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button.secondary {
+            background: #475569;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Ábaco da Tabuada</h1>
+    <p class="subtitle">Toque em qualquer quadradinho para ver a tabuada ou marque o resto com o dedo!</p>
+
+    <div class="dashboard">
+        <div class="hint">Operação Selecionada:</div>
+        <div class="result-text" id="operationText">Toque na grade</div>
+        <div class="hint" id="remainderText"></div>
+    </div>
+
+    <div class="grid-container" id="grid"></div>
+
+    <div class="actions">
+        <button class="secondary" onclick="clearRemainders()">Limpar Restos</button>
+        <button onclick="resetAll()">Reiniciar</button>
+    </div>
+
+    <script>
+        const grid = document.getElementById('grid');
+        const operationText = document.getElementById('operationText');
+        const remainderText = document.getElementById('remainderText');
+        
+        let selectedRow = null;
+        let selectedCol = null;
+        const remainders = {};
+
+        function createGrid() {
+            grid.innerHTML = '';
+            
+            const emptyCorner = document.createElement('div');
+            grid.appendChild(emptyCorner);
+
+            for (let c = 1; c <= 10; c++) {
+                const colHeader = document.createElement('div');
+                colHeader.className = 'cell-header';
+                colHeader.innerText = c;
+                grid.appendChild(colHeader);
+            }
+
+            for (let r = 1; r <= 10; r++) {
+                const rowHeader = document.createElement('div');
+                rowHeader.className = 'cell-header';
+                rowHeader.innerText = r;
+                grid.appendChild(rowHeader);
+
+                for (let c = 1; c <= 10; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    cell.innerText = `${r}x${c}`;
+
+                    cell.addEventListener('click', (e) => {
+                        selectCell(r, c);
+                    });
+
+                    cell.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        toggleRemainder(r, c);
+                    });
+
+                    let lastClick = 0;
+                    cell.addEventListener('touchend', (e) => {
+                        const currentTime = new Date().getTime();
+                        const tapLength = currentTime - lastClick;
+                        if (tapLength < 300 && tapLength > 0) {
+                            e.preventDefault();
+                            toggleRemainder(r, c);
+                        } else {
+                            selectCell(r, c);
+                        }
+                        lastClick = currentTime;
+                    });
+
+                    grid.appendChild(cell);
+                }
+            }
+        }
+
+        function selectCell(r, c) {
+            selectedRow = r;
+            selectedCol = c;
+            updateDisplay();
+        }
+
+        function toggleRemainder(r, c) {
+            const key = `${r}-${c}`;
+            if (remainders[key]) {
+                delete remainders[key];
+            } else {
+                remainders[key] = true;
+            }
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const cells = document.querySelectorAll('.cell');
+            let remainderCount = 0;
+
+            cells.forEach(cell => {
+                const r = parseInt(cell.dataset.row);
+                const c = parseInt(cell.dataset.col);
+                const key = `${r}-${c}`;
+
+                cell.classList.remove('highlight', 'selected', 'remainder');
+
+                if (selectedRow && selectedCol) {
+                    if (r <= selectedRow && c <= selectedCol) {
+                        cell.classList.add('highlight');
+                    }
+                    if (r === selectedRow && c === selectedCol) {
+                        cell.classList.add('selected');
+                    }
+                }
+
+                if (remainders[key]) {
+                    cell.classList.add('remainder');
+                    remainderCount++;
+                }
+            });
+
+            if (selectedRow && selectedCol) {
+                const product = selectedRow * selectedCol;
+                operationText.innerText = `${selectedRow} × ${selectedCol} = ${product}`;
+                
+                if (remainderCount > 0) {
+                    remainderText.innerText = `Total com restos marcados: ${product + remainderCount}`;
+                } else {
+                    remainderText.innerText = `Dica: Toque duplo em quadradinhos extras para marcar o Resto!`;
+                }
+            } else {
+                operationText.innerText = "Toque na grade";
+                remainderText.innerText = "Selecione uma linha e coluna";
+            }
+        }
+
+        function clearRemainders() {
+            for (const key in remainders) {
+                delete remainders[key];
+            }
+            updateDisplay();
+        }
+
+        function resetAll() {
+            selectedRow = null;
+            selectedCol = null;
+            clearRemainders();
+        }
+
+        createGrid();
+    </script>
+</body>
+</html>
